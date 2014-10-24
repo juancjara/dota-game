@@ -1,0 +1,92 @@
+{
+  "name": "",
+  "skills": [
+    {
+      "obj": {
+        "name": "",
+        "abr": "",
+        "key": null
+      },
+      "key": "q"
+    },
+    {
+      "obj": {
+        "name": null,
+        "abr": null,
+        "key": "w"
+      },
+      "key": "w"
+    },
+    {
+      "obj": {
+        "name": "exort",
+        "abr": "e",
+        "key": "e"
+      },
+      "key": "e"
+    },
+    {
+      "obj": {
+        "name": "extra1",
+        "key": "d"
+      },
+      "key": "d"
+    },
+    {
+      "obj": {
+        "name": "extra2",
+        "key": "f"
+      },
+      "key": "f"
+    },
+    {
+      "obj": {
+        "name": "book",
+        "key": "r"
+      },
+      "key": "r"
+    }
+  ],
+  "extraSkills": [
+    {
+      "name": "cold snap",
+      "dependencies": "qqq"
+    },
+    {
+      "name": "sun strike",
+      "dependencies": "eee"
+    },
+    {
+      "name": "ghost snap",
+      "dependencies": "qqw"
+    },
+    {
+      "name": "ice wall",
+      "dependencies": "qqe"
+    },
+    {
+      "name": "emp",
+      "dependencies": "www"
+    },
+    {
+      "name": "tornado",
+      "dependencies": "wwq"
+    },
+    {
+      "name": "alacrity",
+      "dependencies": "wwe"
+    },
+    {
+      "name": "forge spirit",
+      "dependencies": "eeq"
+    },
+    {
+      "name": "chaos meteor",
+      "dependencies": "eew"
+    },
+    {
+      "name": "defeaning blast",
+      "dependencies": "qwe"
+    }
+  ]
+}

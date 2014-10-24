@@ -1,0 +1,46 @@
+<html>
+<head>
+	<title></title>
+  <style type="text/css">
+    #log, #skillsUsed{
+      max-height: 200px;
+      overflow: auto;
+    }
+    .list {
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 20px;
+      width: 200px;
+    }
+    .target {
+      background-color: red;
+      font-size: 2em;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class='list'>
+      <label>skills used</label>
+      <ul id='skillsUsed'>
+      </ul>
+    </div>
+  </div>
+  <div>
+    <label>actual state</label>
+    <div id='actualState'></div>
+  </div>
+	<div id='gg'></div>
+  <div>Log</div>
+  <ul id='log'></ul>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" src='assets/js/vendor/react.min.js'></script>
+  <script type="text/javascript" src='assets/js/dispatcher.js'></script>
+  <script type="text/javascript" src='assets/js/build/CountDown.js'></script>
+  <script type="text/javascript" src='assets/js/build/timer.js'></script>
+  <script type="text/javascript" src='assets/js/build/itemsSlots.js'></script>
+  <script type="text/javascript" src='assets/js/build/challenge.js'></script>
+	<script type="text/javascript" src='assets/js/build/logic.js'></script>
+	<script type="text/javascript" src='assets/js/main.js'></script>
+</body>
+</html>

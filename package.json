@@ -1,0 +1,26 @@
+{
+  "name": "dota-game",
+  "version": "1.0.0",
+  "description": "dota-game =========",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "coffee-script": "^1.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juancjara/dota-game.git"
+  },
+  "author": "juancjara",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juancjara/dota-game/issues"
+  },
+  "homepage": "https://github.com/juancjara/dota-game"
+}
