@@ -5,6 +5,7 @@ CountDown = (data) ->
 		return
 	this.onEnd = data.onFinish or baseFun
 	this.time = data.time * 1000
+	return
 
 CountDown::start = () ->
 	self = this

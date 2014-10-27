@@ -21,20 +21,34 @@ var SkillList = React.createClass({
       lastSkill: ''
     }
   },
+  componentWillReceiveProps: function(nextProps) {
+    for (var i = 0; i < this.state.skills.length; i++) {
+      var actualSkill = this.state.skills[i];
+      var keyBind = actualSkill.key;
+      dispatcher.subscribeKey(keyBind, 
+        this.createFun(Skill.prototype.fun, actualSkill.obj));
+    };
+  },
+  createFun: function(fun, ctx) {
+    //console.log('fun', fun);
+    //console.log('ctx', ctx);
+    return function(param) {
+      fun.bind(ctx)(param);
+    }
+  },
   getSkillName: function(index) {
+    console.log('getSkillName');
     return this.state.skills[index].obj.name;
   },
   getLastSkill: function() {
     return this.state.lastSkill;
   },
   componentDidMount: function() {
-    for (var i = 0; i < this.state.skills.length; i++) {
-      var actualSkill = this.state.skills[i];
-      var keyBind = actualSkill.key;
-      dispatcher.subscribeKey(keyBind, actualSkill.obj.fun);
-    };
+    
   },
   changeSkill: function(index) {
+    //TODO ver si se debe actualizar todo el objeto o no
+    //cuidar no actualizar la funcion del obj
     var extraSkills = this.state.extraSkills;
     var skills = this.state.skills;
     skills[4].obj.name = skills[3].obj.name;
@@ -104,7 +118,10 @@ var ItemList = React.createClass({
   }
 });
 
-var Hero = React.createClass({
+var HeroTemplate = React.createClass({
+  componentWillReceiveProps: function(nextProps) {
+    console.log('newData', nextProps)
+  },
   render: function() {
     return (
       <div>
@@ -200,13 +217,21 @@ var ChallengeTemplate = React.createClass({
     this.setState({
       challenge: this.state.challenge.step(skillName)
     });
+    if (!this.state.challenge.active) {
+      dispatcher.offEvents();
+    }
   },
   selectHero: function() {
-    //TODO
+    var heroMng = new HeroManager();
+    heroMng.create();
+    var heroSelected = heroMng.heros[0];
+    console.log(heroSelected);
+    this.props.updateHero(heroSelected);
   },
   start: function() {
     eventsLog.clear();
     dispatcher.unsubscribe('clickTarget');
+    dispatcher.onEvents();
     this.setState({
       challenge: this.state.challenge.start()
     });
@@ -218,6 +243,8 @@ var ChallengeTemplate = React.createClass({
   render: function() {
     return (
       <div class='list'>
+        <button 
+          onClick={this.selectHero}>cambiar hero</button>
         <SelectChallenge 
           setChallenge={this.setChallenge} />
         <button 
@@ -249,12 +276,41 @@ var BaseTemplate = React.createClass({
       data: this.props.data
     };
   },
+  updateHero: function(newHero) {
+    var skills;
+    var actualSkill;
+    var keyBind;
+    var data;
+    data = this.state.data;
+    //clean keys
+    for (var i = 0; i < this.state.data.skills.length; i++) {
+      actualSkill = this.state.data.skills[i];
+      keyBind = actualSkill.key;
+      //console.log(keyBind);
+      dispatcher.unsubscribeKey(keyBind);
+    };
+    //set new skills
+    skills = newHero.skills;
+    for (var i = 0; i < skills.length; i++) {
+      data.skills[i].obj = skills[i];
+    };
+
+    console.log('update');
+
+    data.name = 'otro';
+
+
+    this.setState({
+      data: data
+    });
+  },
   render: function() {
     return (
       <div>
-        <ChallengeTemplate  />
+        <ChallengeTemplate 
+          updateHero={this.updateHero} />
         <span>INVOKER GAME</span>
-        <Hero heroData={this.state.data} />
+        <HeroTemplate heroData={this.state.data} />
         <ItemList />
       </div>
     );

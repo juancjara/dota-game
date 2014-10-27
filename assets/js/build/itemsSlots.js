@@ -31,6 +31,10 @@ Item.prototype.fun = function(click) {
     if (this.secondsCd === 0) {
       dispatcher.execute('useSkill', this.name);
     } else {
+      if (wtfMode) {
+        dispatcher.execute('useSkill', this.name);
+        return;
+      }
       this.onCooldown = true;
       dispatcher.execute('useSkill', this.name);
       fun = this.finishCd.bind(this);

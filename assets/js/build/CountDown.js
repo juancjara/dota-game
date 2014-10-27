@@ -7,7 +7,7 @@ CountDown = function(data) {
   this.interval = null;
   baseFun = function() {};
   this.onEnd = data.onFinish || baseFun;
-  return this.time = data.time * 1000;
+  this.time = data.time * 1000;
 };
 
 CountDown.prototype.start = function() {

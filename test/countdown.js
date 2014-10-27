@@ -9,7 +9,7 @@ describe('CountDown', function() {
       }
       var c = new CountDown({time: 1});
       c.start();   
-
+      
     })
   })
 });

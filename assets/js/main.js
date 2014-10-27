@@ -1,3 +1,5 @@
+wtfMode = true;
+
 $(function() {
 	/*$.getJSON('assets/data/invoker.json', function(data) {
 		console.log(data);
@@ -13,7 +15,6 @@ $(function() {
       };
       dispatcher.subscribe('clickTarget', func);
     }
-    
   }
 
 	var data = {
@@ -21,7 +22,7 @@ $(function() {
   "skills": [
     {
       "obj": {
-        "name": "quas",
+        "name": "quas1",
         "abr": "q",
         "key": "q",
         fun: function() {
@@ -32,7 +33,7 @@ $(function() {
     },
     {
       "obj": {
-        "name": "wex",
+        "name": "wex1",
         "abr": "w",
         "key": "w",
         fun: function() {
@@ -43,7 +44,7 @@ $(function() {
     },
     {
       "obj": {
-        "name": "exort",
+        "name": "exort1",
         "abr": "e",
         "key": "e",
         fun: function() {
