@@ -42,7 +42,7 @@ HeroManager.prototype.invoker = function() {
   }));
   extraSkills.push(new Skill({
     name: 'chaos meteor',
-    dependencies: 'wwe'
+    dependencies: 'wee'
   }));
   extraSkills.push(new Skill({
     name: 'defeaning blast',
@@ -84,23 +84,22 @@ HeroManager.prototype.invoker = function() {
     };
   };
   invoSkills.push(new Skill({
-    customFun: useSkill(3)
+    customFun: useSkill(3),
+    key: 'd'
   }));
   invoSkills.push(new Skill({
-    customFun: useSkill(4)
+    customFun: useSkill(4),
+    key: 'f'
   }));
   skillInvoke = function(extraSkills) {
-    console.log('extraSkills', extraSkills);
     return function() {
       var dep, i, lastSkill, nameSkill;
-      console.log('extraSkills', extraSkills);
       lastSkill = dispatcher.execute('getLastSkill');
       i = 0;
       while (i < extraSkills.length) {
         dep = extraSkills[i].dependencies;
         nameSkill = extraSkills[i].name;
         if (lastSkill !== nameSkill && eventsLog.isSameState(dep)) {
-          console.log('encontrado');
           dispatcher.execute("changeSkill", i);
           break;
         }

@@ -8,7 +8,6 @@ var dispatcher = (function() {
     }
     var code = e.keyCode ? e.keyCode: e.which;
     var key = KeyCode[code];
-    console.log(code, key);
     if (key in queueKey) {
       eventsLog.addState(key);
       queueKey[key]();
@@ -77,7 +76,6 @@ var eventsLog = (function() {
       var temp = [state.charAt(0), state.charAt(1), state.charAt(2)];
       temp.sort();
       var clone = events.slice(0);
-      console.log(temp, clone)
       clone.sort();
       for (var i = 0; i < clone.length; i++) {
         if (clone[i]!= temp[i]) {

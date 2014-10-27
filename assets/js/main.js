@@ -1,4 +1,5 @@
 wtfMode = true;
+legacyMode = false;
 
 $(function() {
 	/*$.getJSON('assets/data/invoker.json', function(data) {

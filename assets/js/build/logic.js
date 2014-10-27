@@ -25,15 +25,14 @@ var SkillList = React.createClass({displayName: 'SkillList',
     for (var i = 0; i < this.state.skills.length; i++) {
       var actualSkill = this.state.skills[i];
       var keyBind = actualSkill.key;
+
       dispatcher.subscribeKey(keyBind, 
-        this.createFun(Skill.prototype.fun, actualSkill.obj));
+        this.createFun(actualSkill.obj));
     };
   },
-  createFun: function(fun, ctx) {
-    //console.log('fun', fun);
-    //console.log('ctx', ctx);
+  createFun: function(obj) {
     return function(param) {
-      fun.bind(ctx)(param);
+      obj.fun(param);
     }
   },
   getSkillName: function(index) {
@@ -49,14 +48,42 @@ var SkillList = React.createClass({displayName: 'SkillList',
   changeSkill: function(index) {
     //TODO ver si se debe actualizar todo el objeto o no
     //cuidar no actualizar la funcion del obj
+
+    //TODO si no es wtf actualizar al nuevo key
     var extraSkills = this.state.extraSkills;
     var skills = this.state.skills;
-    skills[4].obj.name = skills[3].obj.name;
-    var newSkill = extraSkills[index].name;
-    skills[3].obj.name = newSkill;
+    var keyBind;
+    var temp4fun = skills[4].obj.fun;
+    var temp3fun = skills[3].obj.fun;
+
+    /*for (var i = 3; i <=4 ; i++) {
+      keyBind = skills[i].key;
+      dispatcher.unsubscribeKey(keyBind);
+    };
+
+    skills[4].obj = skills[3].obj;
+    skills[3].obj = extraSkills[index];
+
+
+
+    skills[4].obj = skills[3].obj;
+    skills[4].obj.fun = temp4fun;
+    skills[3].obj = extraSkills[index];
+    skills[3].obj.fun = temp3fun;
+    */
+    //TODO no funciona xq custom no existe para el contexto deseado hay que pensar
+    //se puede actualizar solo los datos internos necesarios o tener un listener especial
+    // para manjear nuevos keys
+/*
+    for (var i = 3; i <=4 ; i++) {
+      keyBind = skills[i].key;
+      dispatcher.subscribeKey(keyBind,
+        this.createFun(skills[i].obj));
+    };*/
+    
     this.setState({
       skills: skills,
-      lastSkill: newSkill
+      lastSkill: extraSkills[index].name
     });
   },
   render: function() {
@@ -95,12 +122,12 @@ var ItemList = React.createClass({displayName: 'ItemList',
     for (var i = 0; i < this.state.itemsSlots.slots.length; i++) {
       elm = this.state.itemsSlots.slots[i];
       dispatcher.subscribeKey(elm.key, 
-        this.createLaunch(fun,this.state.itemsSlots, i));
+        this.createLaunch(this.state.itemsSlots, i));
     }
   },
-  createLaunch: function(fun, ctx, index) {
+  createLaunch: function(obj, index) {
     return function() {
-      fun.bind(ctx, index)();
+      obj.launch(index)
     }
   },
   render: function() {
@@ -201,7 +228,6 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
   getInitialState: function() {
     dispatcher.subscribe('useSkill', this.action);
     var a = new Challenge();
-    //var steps = ['3', 'cold snap', 'sun strike', '1', '2'];
     a.set([]);
     return {
       challenge: a
@@ -222,10 +248,10 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     }
   },
   selectHero: function() {
-    var heroMng = new HeroManager();
+    var heroSelected, heroMng;
+    heroMng = new HeroManager();
     heroMng.create();
-    var heroSelected = heroMng.heros[0];
-    console.log(heroSelected);
+    heroSelected = heroMng.heros[0];
     this.props.updateHero(heroSelected);
   },
   start: function() {
@@ -286,7 +312,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     for (var i = 0; i < this.state.data.skills.length; i++) {
       actualSkill = this.state.data.skills[i];
       keyBind = actualSkill.key;
-      //console.log(keyBind);
+      
       dispatcher.unsubscribeKey(keyBind);
     };
     //set new skills
@@ -294,11 +320,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     for (var i = 0; i < skills.length; i++) {
       data.skills[i].obj = skills[i];
     };
-
-    console.log('update');
-
-    data.name = 'otro';
-
+    data.name = newHero.name;
 
     this.setState({
       data: data
@@ -316,3 +338,6 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     );
   }
 });
+
+//TODO setear skill a key solo una vz xq sino se cambia legacyMode en cualquier lugar
+//y gg nadie sabe en q momento fue

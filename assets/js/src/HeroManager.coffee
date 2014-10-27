@@ -82,10 +82,12 @@ HeroManager::invoker = () ->
     
 
   invoSkills.push new Skill {
-    customFun: useSkill(3)
+    customFun: useSkill(3),
+    key: 'd'
   }
   invoSkills.push new Skill {
-    customFun: useSkill(4)
+    customFun: useSkill(4),
+    key: 'f'
   }
 
   skillInvoke = (extraSkills) ->
