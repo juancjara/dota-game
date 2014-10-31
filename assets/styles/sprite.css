@@ -1,0 +1,93 @@
+.invoker_alacrity, .invoker_quas, .invoker_wex, .invoker_exort, .invoker_invoke, .invoker_chaos_meteor, .invoker_cold_snap, .invoker_deafening_blast, .invoker_emp, .invoker_exort, .invoker_forge_spirit, .invoker_ghost_walk, .invoker_ice_wall, .invoker_sun_strike, .invoker_tornado{
+  background: url(../images/sprites.png) no-repeat;
+}
+
+.invoker_alacrity{
+  background-position: -360px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_quas{
+  background-position: 0 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_wex{
+  background-position: -90px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_exort{
+  background-position: -180px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_invoke{
+  background-position: -270px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_chaos_meteor{
+  background-position: -450px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_cold_snap{
+  background-position: -540px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_deafening_blast{
+  background-position: -630px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_emp{
+  background-position: -720px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_exort{
+  background-position: -810px 0;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_forge_spirit{
+  background-position: 0 -90px ;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_ghost_walk{
+  background-position: -90px -90px ;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_ice_wall{
+  background-position: -180px -90px ;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_sun_strike{
+  background-position: -270px -90px ;
+  width: 90px;
+  height: 90px;
+}
+
+.invoker_tornado{
+  background-position: -360px -90px ;
+  width: 90px;
+  height: 90px;
+}

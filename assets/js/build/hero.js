@@ -5,18 +5,16 @@ Skill = function(data) {
   var func;
   data = data || {};
   this.name = data.name || '';
-  this.srcImg = data.srcImg || '';
-  this.canBeChallenge = data.canBeChallenge || true;
+  this.srcImg = data.srcImg || 'no-skill';
+  this.canBeChallenge = data.canBeChallenge;
   this.key = data.key || '';
   this.dependencies = data.dependencies || '';
   this.secondsCd = data.secondsCd || 0;
   this.onCooldown = false;
   this.countdown = null;
-  this.clickNeeded = data.clickNeeded || false;
+  this.clickNeeded = data.clickNeeded;
   func = function() {
-    return function() {
-      dispatcher.execute('useSkill', this.name);
-    };
+    dispatcher.execute('useSkill', this.name);
   };
   this.customFun = data.customFun || func;
 };
@@ -39,6 +37,7 @@ Skill.prototype.fun = function(click) {
     return;
   }
   if (!this.clickNeeded || (this.clickNeeded && click)) {
+    dispatcher.unsubscribe('clickTarget', func);
     if (this.secondsCd === 0) {
       this.customFun();
     } else {

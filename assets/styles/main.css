@@ -1,0 +1,83 @@
+.hidden {
+  visibility: hidden;
+}
+.game-title {
+  text-align: center;
+}
+.no-skill {
+  background: #000;
+  width: 90px;
+  height: 90px;
+}
+.zoom-challenge {
+  zoom: 0.6;
+}
+.no-used {
+  opacity: 0.6;
+}
+.clear-list {
+  list-style: none;
+  margin: 0 0;
+  padding: 0 0;
+}
+.same-line-top {
+  display: inline-block;
+  vertical-align: top;
+}
+.same-line {
+  display: inline-block;
+}
+.vert-top {
+  vertical-align: top;
+}
+.vert-bot {
+  vertical-align: bottom;
+}
+.pull-left {
+  float: left;
+}
+.select-challenge {
+  width: 300px;
+}
+.main-block {
+  width: 1000px;
+  margin: 0 auto;
+}
+.main-block .hero-data {
+  border: 1px solid #000;
+  padding: 2px 2px;
+}
+.main-block .hero-data .hero-block .hero-details .hero-name {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 1.5em;
+  margin-bottom: 5px;
+}
+.main-block .hero-data .hero-block .hero-details .hero-img {
+  zoom: 0.5;
+}
+.main-block .hero-data .hero-block .hero-skill-slots .skill {
+  margin: 0 1px;
+  border: 3px solid #808080;
+}
+.main-block .hero-data .hero-item-slots {
+  width: 280px;
+}
+.main-block .hero-data .hero-item-slots .item {
+  border: 3px solid #808080;
+  margin: 0 1px;
+}
+.main-block .challenge-block .field {
+  background: #000;
+  height: 200px;
+}
+.main-block .challenge-block .field .target {
+  border-radius: 50%;
+  position: relative;
+  margin: auto;
+  top: 50%;
+  background: #f00;
+  height: 30px;
+  width: 30px;
+}

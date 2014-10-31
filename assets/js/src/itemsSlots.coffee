@@ -1,6 +1,7 @@
 Item = (data) ->
   data = data or {}
   this.name = data.nameParam or ''
+  this.srcImg = data.srcImg or ''
   this.clickNeeded = data.clickNeeded or false
   this.secondsCd = data.secondsCd or 0
   this.onCooldown = false
@@ -11,7 +12,7 @@ Item::finishCd = () ->
   this.onCooldown = false;
   return
 
-Item.stop = () ->
+Item::stop = () ->
   if this.countdown
     this.countdown.stop()
     this.onCooldown = false
@@ -53,7 +54,8 @@ ItemsSlots = () ->
         { 
           nameParam: '' + i,
           clickNeeded: true,
-          secondsCd: 2
+          secondsCd: 2,
+          srcImg: 'item_dagon'
         }
       )
     } 

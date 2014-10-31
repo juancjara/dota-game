@@ -17,6 +17,54 @@ $(function() {
       dispatcher.subscribe('clickTarget', func);
     }
   }
+  var data2 = {
+    "name": "none",
+    skills: [
+      {
+        "obj": {
+          "name": "none",
+          fun: function() {}
+        },
+        "key": "q"
+      },
+      {
+        "obj": {
+          "name": "none",
+          fun: function() {}
+        },
+        "key": "w"
+      },
+      {
+        "obj": {
+          "name": "none",
+          fun: function() {}
+        },
+        "key": "e"
+      },
+      {
+        "obj": {
+          "name": "none",
+          fun: function() {}
+        },
+        "key": "d"
+      },
+      {
+        "obj": {
+          "name": "none",
+          fun: function() {}
+        },
+        "key": "f"
+      },
+      {
+        "obj": {
+          "name": "none",
+          fun: function() {}
+        },
+        "key": "r"
+      }
+    ],
+    extraSkills: []
+  }
 
 	var data = {
   "name": "invoker",
@@ -141,7 +189,7 @@ $(function() {
 };
 
 	React.renderComponent(
-		BaseTemplate({data: data}),
-		document.getElementById('gg')
+		BaseTemplate({data: data2}),
+		document.getElementById('main')
 	);
 });

@@ -2,9 +2,11 @@
 
 var SkillSlot = React.createClass({displayName: 'SkillSlot',
   render: function() {
+    var className = 'same-line skill '+this.props.item.srcImg;
     return (
-      React.DOM.li({key: this.props.key}, 
-        this.props.item.name
+      React.DOM.li({
+        className: className, 
+        key: this.props.key}
       )
     );
   }
@@ -14,14 +16,14 @@ var SkillList = React.createClass({displayName: 'SkillList',
   getInitialState: function() {
     dispatcher.subscribe('changeSkill', this.changeSkill);
     dispatcher.subscribe('getLastSkill', this.getLastSkill);
-    dispatcher.subscribe('getSkillName', this.getSkillName);
+    dispatcher.subscribe('useExtraSkill', this.useExtraSkill);
     return {
       skills: this.props.list,
-      extraSkills: this.props.extraSkills,
       lastSkill: ''
     }
   },
   componentWillReceiveProps: function(nextProps) {
+    
     for (var i = 0; i < this.state.skills.length; i++) {
       var actualSkill = this.state.skills[i];
       var keyBind = actualSkill.key;
@@ -35,9 +37,8 @@ var SkillList = React.createClass({displayName: 'SkillList',
       obj.fun(param);
     }
   },
-  getSkillName: function(index) {
-    console.log('getSkillName');
-    return this.state.skills[index].obj.name;
+  useExtraSkill: function(index) {
+    this.state.skills[index].obj.fun();
   },
   getLastSkill: function() {
     return this.state.lastSkill;
@@ -50,37 +51,15 @@ var SkillList = React.createClass({displayName: 'SkillList',
     //cuidar no actualizar la funcion del obj
 
     //TODO si no es wtf actualizar al nuevo key
-    var extraSkills = this.state.extraSkills;
+    var extraSkills = this.props.extraSkills;
     var skills = this.state.skills;
     var keyBind;
     var temp4fun = skills[4].obj.fun;
     var temp3fun = skills[3].obj.fun;
 
-    /*for (var i = 3; i <=4 ; i++) {
-      keyBind = skills[i].key;
-      dispatcher.unsubscribeKey(keyBind);
-    };
-
     skills[4].obj = skills[3].obj;
     skills[3].obj = extraSkills[index];
 
-
-
-    skills[4].obj = skills[3].obj;
-    skills[4].obj.fun = temp4fun;
-    skills[3].obj = extraSkills[index];
-    skills[3].obj.fun = temp3fun;
-    */
-    //TODO no funciona xq custom no existe para el contexto deseado hay que pensar
-    //se puede actualizar solo los datos internos necesarios o tener un listener especial
-    // para manjear nuevos keys
-/*
-    for (var i = 3; i <=4 ; i++) {
-      keyBind = skills[i].key;
-      dispatcher.subscribeKey(keyBind,
-        this.createFun(skills[i].obj));
-    };*/
-    
     this.setState({
       skills: skills,
       lastSkill: extraSkills[index].name
@@ -88,13 +67,15 @@ var SkillList = React.createClass({displayName: 'SkillList',
   },
   render: function() {
     return (
-      React.DOM.ul(null, 
-        this.state.skills.map(function(item, i) {
-          return ( SkillSlot({
-            key: i, 
-            item: item.obj})
-          )
-        }, this)
+      React.DOM.div({className: "hero-skill-slots same-line vert-bot"}, 
+        React.DOM.ul({className: "clear-list"}, 
+          this.state.skills.map(function(item, i) {
+            return ( SkillSlot({
+              key: i, 
+              item: item.obj})
+            )
+          }, this)
+        )
       )
     );
   }
@@ -102,8 +83,11 @@ var SkillList = React.createClass({displayName: 'SkillList',
 
 var ItemSlot = React.createClass({displayName: 'ItemSlot',
   render: function() {
+    var className = 'item same-line '+this.props.item.srcImg;
     return (
-      React.DOM.li({key: this.props.key}, 
+      React.DOM.li({
+        className: className, 
+        key: this.props.key}, 
         this.props.item.name
       )
     );
@@ -113,7 +97,7 @@ var ItemSlot = React.createClass({displayName: 'ItemSlot',
 var ItemList = React.createClass({displayName: 'ItemList',
   getInitialState: function() {
     return {
-      itemsSlots: new ItemsSlots()
+      itemsSlots: this.props.itemsSlots
     }
   },
   componentDidMount: function() {
@@ -132,27 +116,37 @@ var ItemList = React.createClass({displayName: 'ItemList',
   },
   render: function() {
     return (
-      React.DOM.ul(null, 
-        this.state.itemsSlots.slots.map(function(slot ,i) {
-          return (
-            ItemSlot({
-              key: i, 
-              item: slot.item})
-          )
-        }, this)
+      React.DOM.div({
+        className: "hero-item-slots same-line vert-bot"}, 
+        React.DOM.ul({className: "clear-list"}, 
+          this.state.itemsSlots.slots.map(function(slot ,i) {
+            return (
+              ItemSlot({
+                key: i, 
+                item: slot.item})
+            )
+          }, this)
+        )
       )
     );
   }
 });
 
 var HeroTemplate = React.createClass({displayName: 'HeroTemplate',
-  componentWillReceiveProps: function(nextProps) {
-    console.log('newData', nextProps)
-  },
   render: function() {
+    var imgHero = 'hero-img '+this.props.heroData.srcImg;
     return (
-      React.DOM.div(null, 
-        React.DOM.div(null, this.props.heroData.name), 
+      React.DOM.div({className: "hero-block same-line-top"}, 
+        React.DOM.div({id: "actualState"}), 
+        React.DOM.div({className: "hero-details same-line-top"}, 
+          React.DOM.div({
+            className: "hero-name"}, 
+            this.props.heroData.name
+          ), 
+          React.DOM.div({
+            className: imgHero}
+          )
+        ), 
         SkillList({
           list: this.props.heroData.skills, 
           extraSkills: this.props.heroData.extraSkills})
@@ -161,11 +155,32 @@ var HeroTemplate = React.createClass({displayName: 'HeroTemplate',
   }
 });
 
-var ChallengueStep = React.createClass({displayName: 'ChallengueStep',
+var ChallengeStep = React.createClass({displayName: 'ChallengeStep',
   render: function() {
+    var opacity = '';
+    if (!this.props.item.done) {
+      opacity=' no-used'
+    }
+    var className='same-line zoom-challenge '+ this.props.item.srcImg +
+        opacity;
     return (
-      React.DOM.li({key: this.props.key}, 
-        this.props.item
+      React.DOM.li({
+        className: className, 
+        key: this.props.key}
+      )
+    );
+  }
+});
+
+var StepToChooseFrom = React.createClass({displayName: 'StepToChooseFrom',
+  render: function() {
+    var className = 'same-line zoom-challenge ' + this.props.item.srcImg;
+    return (
+      React.DOM.li({
+        className: className, 
+        key: this.props.key, 
+        onClick: this.props.addStep.bind(null, this.props.item)}
+        
       )
     );
   }
@@ -173,48 +188,85 @@ var ChallengueStep = React.createClass({displayName: 'ChallengueStep',
 
 var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
   getInitialState: function() {
-    var stepsToChooseFrom = ['1', '2', '3', '4', '5', '6', 'cold snap',
-        'sun strike', 'ghost walk', 'ice wall', 'emp', 'tornado',
-        'alacrity', 'forge spirit', 'chaos meteor', 'defeaning blast'];
     return {
       steps: [],
-      stepsToChooseFrom: stepsToChooseFrom
     }
   },
-  addStep: function(index) {
+  addStep: function(step) {
     var steps = this.state.steps;
-    steps.push(this.state.stepsToChooseFrom[index]);
+    steps.push(step);
     this.setState({
       steps: steps
     });
   },
   setChallenge: function() {
-    this.props.setChallenge(this.state.steps);
+    dispatcher.execute('setChallenge', this.state.steps);
   },
   render: function() {
+    var skillsToChooseFrom = [];
+    var extraSkillsToChooseFrom = [];
+    var itemsToChooseFrom = [];
+    var skills;
+    var items;
+
+    skills = this.props.heroSelected.skills
+    for (var i = 0; i < skills.length; i++) {
+      if (skills[0].obj.canBeChallenge) {
+        skillsToChooseFrom.push(skills[i].obj);
+      }
+    };
+
+    skills = this.props.heroSelected.extraSkills;
+    for (var i = 0; i < skills.length; i++) {
+      if (skills[i].canBeChallenge) {
+        extraSkillsToChooseFrom.push(skills[i]);
+      }
+    };    
+
+    var items = this.props.itemsSelected.slots;
+    for (var i = 0; i < items.length; i++) {
+      itemsToChooseFrom.push(items[i].item);
+    };
+
     return (
-      React.DOM.div(null, 
+      React.DOM.div({className: "select-challenge same-line-top"}, 
         React.DOM.label(null, "to do"), 
         React.DOM.button({onClick: this.setChallenge}, "Setear reto"), 
-        React.DOM.ul(null, 
+        React.DOM.ul({className: "clear-list"}, 
           this.state.steps.map(function(step ,i) {
+            var className ='same-line zoom-challenge '+ step.srcImg;
             return (
               React.DOM.li({
-                key: i}, 
-                step
+                className: className, 
+                key: i}
               )
             )
           }, this)
         ), 
         React.DOM.label(null, "escoger de aca"), 
         React.DOM.ul(null, 
-          this.state.stepsToChooseFrom.map(function(step ,i) {
+          skillsToChooseFrom.map(function(step ,i) {
             return (
-              React.DOM.li({
+              StepToChooseFrom({
                 key: i, 
-                onClick: this.addStep.bind(null, i)}, 
-                step
-              )
+                item: step, 
+                addStep: this.addStep})
+            )
+          }, this), 
+          extraSkillsToChooseFrom.map(function(step ,i) {
+            return (
+              StepToChooseFrom({
+                key: i, 
+                item: step, 
+                addStep: this.addStep})
+            )
+          }, this), 
+          itemsToChooseFrom.map(function(step ,i) {
+            return (
+              StepToChooseFrom({
+                key: i, 
+                item: step, 
+                addStep: this.addStep})
             )
           }, this)
         )
@@ -227,6 +279,7 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
 var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
   getInitialState: function() {
     dispatcher.subscribe('useSkill', this.action);
+    dispatcher.subscribe('setChallenge', this.setChallenge);
     var a = new Challenge();
     a.set([]);
     return {
@@ -237,7 +290,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     console.log("steps", steps);
     this.setState({
       challenge: this.state.challenge.set(steps)
-    });
+    });    
   },
   action: function(skillName) {
     this.setState({
@@ -246,13 +299,6 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     if (!this.state.challenge.active) {
       dispatcher.offEvents();
     }
-  },
-  selectHero: function() {
-    var heroSelected, heroMng;
-    heroMng = new HeroManager();
-    heroMng.create();
-    heroSelected = heroMng.heros[0];
-    this.props.updateHero(heroSelected);
   },
   start: function() {
     eventsLog.clear();
@@ -267,30 +313,32 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     dispatcher.execute('clickTarget');
   },
   render: function() {
+    var show = this.state.challenge.finish? '': 'hidden';
     return (
-      React.DOM.div({class: "list"}, 
+      React.DOM.div({className: "challenge-block"}, 
         React.DOM.button({
-          onClick: this.selectHero}, "cambiar hero"), 
-        SelectChallenge({
-          setChallenge: this.setChallenge}), 
-        React.DOM.button({
-          onClick: this.start}, "Iniciar"), 
-        React.DOM.div(null, "Tiempo ", this.state.challenge.timer.time, " segundos"), 
-        React.DOM.label(null, "Challengue"), 
-        React.DOM.ul(null, 
-          this.state.challenge.expectedSteps.map(function(step ,i) {
+          onClick: this.start}, 
+          "Iniciar"
+        ), 
+        React.DOM.div({
+          className: show}, 
+          "Tiempo ", this.state.challenge.timer.time, " segundos"
+        ), 
+        React.DOM.ul({className: "clear-list"}, 
+          this.state.challenge.wishSteps.map(function(step ,i) {
             return (
-              ChallengueStep({
+              ChallengeStep({
                 key: i, 
                 item: step})
             )
           }, this)
         ), 
-        React.DOM.div({
+        React.DOM.div({className: "field"}, 
+          React.DOM.div({
           className: "target", 
-          onClick: this.clickTarget}, 
-          "Enemigo"
+          onClick: this.clickTarget}
           )
+        )
       )
     );
   }  
@@ -299,8 +347,16 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
 var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   getInitialState: function() {
     return {
-      data: this.props.data
+      data: this.props.data,
+      itemsSlots: new ItemsSlots()
     };
+  },
+  componentDidMount: function() {
+    var heroSelected, heroMng;
+    heroMng = new HeroManager();
+    heroMng.create();
+    heroSelected = heroMng.heros[0];
+    this.updateHero(heroSelected);
   },
   updateHero: function(newHero) {
     var skills;
@@ -321,6 +377,8 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
       data.skills[i].obj = skills[i];
     };
     data.name = newHero.name;
+    data.srcImg = newHero.srcImg;
+    data.extraSkills = newHero.extraSkills;
 
     this.setState({
       data: data
@@ -329,15 +387,27 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   render: function() {
     return (
       React.DOM.div(null, 
-        ChallengeTemplate({
-          updateHero: this.updateHero}), 
-        React.DOM.span(null, "INVOKER GAME"), 
-        HeroTemplate({heroData: this.state.data}), 
-        ItemList(null)
+        React.DOM.h1({className: "game-title"}, "DOTA PRACTICE"), 
+        React.DOM.div({className: "main-block same-line"}, 
+          ChallengeTemplate({
+            updateHero: this.updateHero, 
+            heroSelected: this.state.data, 
+            itemsSelected: this.state.itemsSlots}), 
+          React.DOM.div({className: "hero-data"}, 
+            HeroTemplate({
+              heroData: this.state.data}), 
+            ItemList({
+            itemsSlots: this.state.itemsSlots})
+          )
+        ), 
+        SelectChallenge({
+          heroSelected: this.state.data, 
+          itemsSelected: this.state.itemsSlots})
       )
     );
   }
 });
 
-//TODO setear skill a key solo una vz xq sino se cambia legacyMode en cualquier lugar
+//TODO setear skill a key solo una vz xq sino se cambia 
+//legacyMode en cualquier lugar
 //y gg nadie sabe en q momento fue

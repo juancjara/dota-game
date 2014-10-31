@@ -1,0 +1,9 @@
+.hero_invoker {
+  background: url(../images/heros.png) no-repeat;
+}
+.hero_invoker {
+  background-position: 0 0;
+  width: 235px;
+  height: 272px;
+  zoom: 0.8;
+}

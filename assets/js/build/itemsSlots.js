@@ -4,6 +4,7 @@ var Item, ItemsSlots;
 Item = function(data) {
   data = data || {};
   this.name = data.nameParam || '';
+  this.srcImg = data.srcImg || '';
   this.clickNeeded = data.clickNeeded || false;
   this.secondsCd = data.secondsCd || 0;
   this.onCooldown = false;
@@ -14,7 +15,7 @@ Item.prototype.finishCd = function() {
   this.onCooldown = false;
 };
 
-Item.stop = function() {
+Item.prototype.stop = function() {
   if (this.countdown) {
     this.countdown.stop();
     this.onCooldown = false;
@@ -62,7 +63,8 @@ ItemsSlots = function() {
       item: new Item({
         nameParam: '' + i,
         clickNeeded: true,
-        secondsCd: 2
+        secondsCd: 2,
+        srcImg: 'item_dagon'
       })
     };
     this.slots.push(obj);

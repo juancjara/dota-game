@@ -1,38 +1,13 @@
 <html>
 <head>
-	<title></title>
-  <style type="text/css">
-    #log, #skillsUsed{
-      max-height: 200px;
-      overflow: auto;
-    }
-    .list {
-      display: inline-block;
-      vertical-align: top;
-      margin-left: 20px;
-      width: 200px;
-    }
-    .target {
-      background-color: red;
-      font-size: 2em;
-    }
-  </style>
+	<title>dota practice</title>
+  <link rel="stylesheet" href='assets/styles/main.css'>
+  <link rel="stylesheet" href='assets/styles/sprite.css'>
+  <link rel="stylesheet" href='assets/styles/hero.css'>
+  <link rel="stylesheet" href='assets/styles/items.css'>
 </head>
 <body>
-  <div>
-    <div class='list'>
-      <label>skills used</label>
-      <ul id='skillsUsed'>
-      </ul>
-    </div>
-  </div>
-  <div>
-    <label>actual state</label>
-    <div id='actualState'></div>
-  </div>
-	<div id='gg'></div>
-  <div>Log</div>
-  <ul id='log'></ul>
+	<div id='main'></div>
 	<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>-->
   <script type="text/javascript" src='assets/js/vendor/jquery-2.0.0.min.js'></script>
 	<script type="text/javascript" src='assets/js/vendor/react.min.js'></script>

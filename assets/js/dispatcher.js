@@ -47,7 +47,7 @@ var eventsLog = (function() {
   var events = [' ', ' ', ' '];
   return {
     addState: function(key) {
-      $('#log').prepend('<li>'+ key +'</li>');
+      //$('#log').prepend('<li>'+ key +'</li>');
     },
     addKey: function(key) {
       var acumulate = '';
