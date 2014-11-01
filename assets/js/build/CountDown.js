@@ -8,19 +8,22 @@ CountDown = function(data) {
   baseFun = function() {};
   this.onEnd = data.onFinish || baseFun;
   this.time = data.time * 1000;
+  this.showOnSeconds = data.showOnSeconds || baseFun;
 };
 
 CountDown.prototype.start = function() {
   var counter, self;
   self = this;
-  counter = 0;
+  counter = this.time;
   this.interval = setInterval(function() {
-    if (counter === self.time) {
+    if (counter === 0) {
+      console.log('finish');
       self.onEnd();
       self.stop();
+    } else if (counter % 1000 === 0) {
+      self.showOnSeconds(counter / 1000);
     }
-    console.log(counter);
-    counter += 100;
+    counter -= 100;
   }, 100);
 };
 

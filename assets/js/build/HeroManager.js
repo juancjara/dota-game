@@ -2,7 +2,7 @@
 var HeroManager;
 
 HeroManager = function() {
-  this.heros = [];
+  this.heros = {};
 };
 
 HeroManager.prototype.invoker = function() {
@@ -10,14 +10,14 @@ HeroManager.prototype.invoker = function() {
   extraSkills = [];
   extraSkills.push(new Skill({
     canBeChallenge: true,
-    srcImg: 'invoker_cold_snap',
+    srcImg: 'cold_snap',
     name: 'cold snap',
     clickNeeded: true,
     dependencies: 'qqq'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
-    srcImg: 'invoker_sun_strike',
+    srcImg: 'sun_strike',
     name: 'sun strike',
     clickNeeded: true,
     dependencies: 'eee'
@@ -25,56 +25,56 @@ HeroManager.prototype.invoker = function() {
   extraSkills.push(new Skill({
     canBeChallenge: true,
     name: 'ghost walk',
-    srcImg: 'invoker_ghost_walk',
+    srcImg: 'ghost_walk',
     clickNeeded: false,
     dependencies: 'qqw'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
     name: 'ice wall',
-    srcImg: 'invoker_ice_wall',
+    srcImg: 'ice_wall',
     clickNeeded: false,
     dependencies: 'qqe'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
     name: 'emp',
-    srcImg: 'invoker_emp',
+    srcImg: 'emp',
     clickNeeded: true,
     dependencies: 'www'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
     name: 'tornado',
-    srcImg: 'invoker_tornado',
+    srcImg: 'tornado',
     clickNeeded: true,
     dependencies: 'wwq'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
     name: 'alacrity',
-    srcImg: 'invoker_alacrity',
+    srcImg: 'alacrity',
     clickNeeded: true,
     dependencies: 'wwe'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
     name: 'forge spirit',
-    srcImg: 'invoker_forge_spirit',
+    srcImg: 'forge_spirit',
     clickNeeded: false,
     dependencies: 'eeq'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
-    name: 'defeaning blast',
-    srcImg: 'invoker_deafening_blast',
+    name: 'deafening blast',
+    srcImg: 'deafening_blast',
     clickNeeded: true,
     dependencies: 'qwe'
   }));
   extraSkills.push(new Skill({
     canBeChallenge: true,
     name: 'chaos meteor',
-    srcImg: 'invoker_chaos_meteor',
+    srcImg: 'chaos_meteor',
     clickNeeded: true,
     dependencies: 'wee'
   }));
@@ -84,7 +84,7 @@ HeroManager.prototype.invoker = function() {
     key: 'q',
     secondsCd: 0,
     canBeChallenge: false,
-    srcImg: 'invoker_quas',
+    srcImg: 'quas',
     clickNeeded: false,
     customFun: function() {
       eventsLog.addKey('q');
@@ -95,7 +95,7 @@ HeroManager.prototype.invoker = function() {
     key: 'w',
     secondsCd: 0,
     canBeChallenge: false,
-    srcImg: 'invoker_wex',
+    srcImg: 'wex',
     clickNeeded: false,
     customFun: function() {
       eventsLog.addKey('w');
@@ -106,7 +106,7 @@ HeroManager.prototype.invoker = function() {
     key: 'e',
     secondsCd: 0,
     canBeChallenge: false,
-    srcImg: 'invoker_exort',
+    srcImg: 'exort',
     clickNeeded: false,
     customFun: function() {
       eventsLog.addKey('e');
@@ -147,7 +147,7 @@ HeroManager.prototype.invoker = function() {
     key: 'r',
     secondsCd: 0,
     canBeChallenge: false,
-    srcImg: 'invoker_invoke',
+    srcImg: 'invoke',
     clickNeeded: false,
     customFun: skillInvoke(extraSkills)
   }));
@@ -155,12 +155,12 @@ HeroManager.prototype.invoker = function() {
     name: 'invoker',
     skills: invoSkills,
     extraSkills: extraSkills,
-    srcImg: 'hero_invoker'
+    srcImg: 'invoker'
   });
   return invoker;
 };
 
 HeroManager.prototype.create = function() {
-  this.heros.push(this.invoker());
+  this.heros['invoker'] = this.invoker();
   return this;
 };

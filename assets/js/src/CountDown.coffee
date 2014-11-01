@@ -5,18 +5,22 @@ CountDown = (data) ->
 		return
 	this.onEnd = data.onFinish or baseFun
 	this.time = data.time * 1000
+	this.showOnSeconds = data.showOnSeconds or baseFun
 	return
 
 CountDown::start = () ->
 	self = this
-	counter = 0
+	counter = this.time
 	this.interval = setInterval(
 		() ->
-			if counter ==  self.time
+			if counter ==  0
+				console.log('finish')
 				self.onEnd()
 				self.stop()
-			console.log counter
-			counter += 100
+			else if counter % 1000 == 0
+				self.showOnSeconds(counter/1000)
+			#console.log counter
+			counter -= 100
 			return
 		, 100)
 	return

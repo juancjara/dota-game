@@ -190,11 +190,52 @@ var SelectChallenge = React.createClass({
   getInitialState: function() {
     return {
       steps: [],
+      listChallenge: listChallenge
     }
   },
   addStep: function(step) {
     var steps = this.state.steps;
     steps.push(step);
+    this.setState({
+      steps: steps
+    });
+  },
+  selectListChallenge: function(index) {
+    var list = this.state.listChallenge[index];
+    var steps = [];
+    var name = ''
+    var skills;
+    var items;
+    for (var i = 0; i < list.length; i++) {
+      name = list[i].name;
+      if (list[i].src == 'skills') {
+        skills = this.props.heroSelected.skills
+        for (var k = 0; k < skills.length; k++) {
+          if (name == skills[k].obj.name) {
+            steps.push(skills[k].obj);
+            break;
+          }
+        };
+      }
+      else if (list[i].src == 'extraSkills') {
+        skills = this.props.heroSelected.extraSkills
+        for (var k = 0; k < skills.length; k++) {
+          if (name == skills[k].name) {
+            steps.push(skills[k]);
+            break;
+          }
+        };
+      }
+      else if (list[i].src == 'items') {
+        items = this.props.itemsSelected.slots
+        for (var k = 0; k < skills.length; k++) {
+          if (name == skills[k].item.name) {
+            steps.push(skills[k].item);
+            break;
+          }
+        };
+      }
+    };
     this.setState({
       steps: steps
     });
@@ -211,7 +252,7 @@ var SelectChallenge = React.createClass({
 
     skills = this.props.heroSelected.skills
     for (var i = 0; i < skills.length; i++) {
-      if (skills[0].obj.canBeChallenge) {
+      if (skills[i].obj.canBeChallenge) {
         skillsToChooseFrom.push(skills[i].obj);
       }
     };
@@ -228,9 +269,9 @@ var SelectChallenge = React.createClass({
       itemsToChooseFrom.push(items[i].item);
     };
 
+
     return (
       <div className='select-challenge same-line-top'>
-        <label>to do</label>
         <button onClick={this.setChallenge}>Setear reto</button>
         <ul className='clear-list'>
           {this.state.steps.map(function(step ,i) {
@@ -243,8 +284,27 @@ var SelectChallenge = React.createClass({
             )
           }, this)}
         </ul>
-        <label>escoger de aca</label>
-        <ul>
+        <div>
+          <label>CustomList</label>
+          <ul className='challenge-list'>
+            {this.state.listChallenge.map(function(challenge ,i) {
+              return (
+                <li onClick={this.selectListChallenge.bind(null, i)}>
+                  {challenge.map(function(step ,i) {
+                    var className ='same-line zoom-challenge '+ step.srcImg;
+                    return (
+                      <span
+                        className= {className}
+                        key= {i}>
+                      </span>
+                    )
+                  }, this)}
+                </li>
+              )
+            }, this)}
+          </ul>
+        </div>
+        <ul class='custom-step'>
           {skillsToChooseFrom.map(function(step ,i) {
             return (
               <StepToChooseFrom
@@ -283,11 +343,12 @@ var ChallengeTemplate = React.createClass({
     var a = new Challenge();
     a.set([]);
     return {
-      challenge: a
+      challenge: a,
+      message: 'Seleccione Reto'
     };
   },
   setChallenge: function(steps) {
-    console.log("steps", steps);
+    this.stop();
     this.setState({
       challenge: this.state.challenge.set(steps)
     });    
@@ -300,20 +361,58 @@ var ChallengeTemplate = React.createClass({
       dispatcher.offEvents();
     }
   },
-  start: function() {
+  setMessage: function(message) {
+    this.setState({
+      message: message
+    });
+  },
+  startChallenge: function() {
     eventsLog.clear();
     dispatcher.unsubscribe('clickTarget');
     dispatcher.onEvents();
     this.setState({
-      challenge: this.state.challenge.start()
+      challenge : this.state.challenge.start(),
+      message: ''
+    });
+  },
+  start: function() {
+    var challenge = this.state.challenge;
+    var message = ''
+    if (!challenge.wishSteps.length) {
+      message = 'Seleccione Reto';      
+    }
+    else {
+      message = 'Empieza en ..';
+      this.stop();
+      var c = new CountDown({
+        onFinish: this.startChallenge,
+        time: 3,
+        showOnSeconds: this.setMessage
+      });
+      c.start();
+
+    }
+    this.setState({
+      message: message
+    });
+  },
+  stop: function() {
+    eventsLog.clear();
+    dispatcher.unsubscribe('clickTarget');
+    dispatcher.offEvents();
+    this.setState({
+      challenge: this.state.challenge.stop()
     });
   },
   clickTarget: function() {
-    console.log('onclick');
     dispatcher.execute('clickTarget');
   },
   render: function() {
-    var show = this.state.challenge.finish? '': 'hidden';
+    var show = this.state.challenge.isOver? '': 'hidden';
+    var classMessage = 'message-block ';
+    if (this.state.message.length == 0 ){
+      classMessage = ' hide'
+    }
     return (
       <div className='challenge-block'>
         <button 
@@ -334,6 +433,11 @@ var ChallengeTemplate = React.createClass({
           }, this)}
         </ul>
         <div className='field'>
+          <div className='message-block'>
+            <div className='message'>
+              {this.state.message}
+            </div>
+          </div>
           <div 
           className='target'
           onClick={this.clickTarget}>
@@ -352,10 +456,8 @@ var BaseTemplate = React.createClass({
     };
   },
   componentDidMount: function() {
-    var heroSelected, heroMng;
-    heroMng = new HeroManager();
-    heroMng.create();
-    heroSelected = heroMng.heros[0];
+    var heroSelected;
+    heroSelected = heroMng.heros['invoker'];
     this.updateHero(heroSelected);
   },
   updateHero: function(newHero) {

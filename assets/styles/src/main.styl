@@ -1,4 +1,8 @@
-widthGame = 1000px
+widthGame = 1000
+widthMessage = 300
+
+.hide
+  display: none
 
 .hidden
   visibility: hidden
@@ -8,8 +12,13 @@ widthGame = 1000px
 
 .no-skill 
   background: black
-  width: 90px
   height: 90px
+  width: 90px
+  
+.no-item
+  background: black
+  height: 64px;
+  width: 85px;
 
 .zoom-challenge
   zoom: 0.6
@@ -40,10 +49,14 @@ widthGame = 1000px
 
 .select-challenge
   width: 300px
+  .challenge-list
+    list-style-type: decimal
+    .zoom-challenge
+      zoom: 0.4
 
 .main-block
-  width: widthGame
   margin: 0 auto
+  width: widthGame
   .hero-data
     border: 1px solid black
     padding: 2px 2px
@@ -54,9 +67,9 @@ widthGame = 1000px
         .hero-name
           background: black
           color: white
-          text-align: center
           font-size: 1.5em
           margin-bottom: 5px
+          text-align: center
         
         .hero-img
           zoom: 0.5
@@ -76,12 +89,30 @@ widthGame = 1000px
     .field
       background: black
       height: 200px
+      position: relative
+      .message-block
+        background: white
+        left: 0
+        magin: 0 auto
+        margin: 0 auto
+        opacity: 0.7
+        position: absolute
+        right: 0
+        top: 45%
+        width: widthMessage
+        z-index: 10
+        .message
+          color: black
+          font-size: 2em
+          position: rel
+          text-align: center
+          top: 50%
       .target
-        border-radius: 50%
-        position: relative
-        margin: auto
-        top: 50%
         background: red
+        border-radius: 50%
         height: 30px
+        margin: auto
+        position: relative
+        top: 50%
         width: 30px
 

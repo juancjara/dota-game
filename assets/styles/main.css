@@ -1,3 +1,6 @@
+.hide {
+  display: none;
+}
 .hidden {
   visibility: hidden;
 }
@@ -6,8 +9,13 @@
 }
 .no-skill {
   background: #000;
-  width: 90px;
   height: 90px;
+  width: 90px;
+}
+.no-item {
+  background: #000;
+  height: 64px;
+  width: 85px;
 }
 .zoom-challenge {
   zoom: 0.6;
@@ -39,9 +47,15 @@
 .select-challenge {
   width: 300px;
 }
+.select-challenge .challenge-list {
+  list-style-type: decimal;
+}
+.select-challenge .challenge-list .zoom-challenge {
+  zoom: 0.4;
+}
 .main-block {
-  width: 1000px;
   margin: 0 auto;
+  width: 1000;
 }
 .main-block .hero-data {
   border: 1px solid #000;
@@ -50,9 +64,9 @@
 .main-block .hero-data .hero-block .hero-details .hero-name {
   background: #000;
   color: #fff;
-  text-align: center;
   font-size: 1.5em;
   margin-bottom: 5px;
+  text-align: center;
 }
 .main-block .hero-data .hero-block .hero-details .hero-img {
   zoom: 0.5;
@@ -71,13 +85,33 @@
 .main-block .challenge-block .field {
   background: #000;
   height: 200px;
+  position: relative;
+}
+.main-block .challenge-block .field .message-block {
+  background: #fff;
+  left: 0;
+  magin: 0 auto;
+  margin: 0 auto;
+  opacity: 0.7;
+  position: absolute;
+  right: 0;
+  top: 45%;
+  width: 300;
+  z-index: 10;
+}
+.main-block .challenge-block .field .message-block .message {
+  color: #000;
+  font-size: 2em;
+  position: rel;
+  text-align: center;
+  top: 50%;
 }
 .main-block .challenge-block .field .target {
-  border-radius: 50%;
-  position: relative;
-  margin: auto;
-  top: 50%;
   background: #f00;
+  border-radius: 50%;
   height: 30px;
+  margin: auto;
+  position: relative;
+  top: 50%;
   width: 30px;
 }

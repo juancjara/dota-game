@@ -1,92 +1,92 @@
-.invoker_alacrity, .invoker_quas, .invoker_wex, .invoker_exort, .invoker_invoke, .invoker_chaos_meteor, .invoker_cold_snap, .invoker_deafening_blast, .invoker_emp, .invoker_exort, .invoker_forge_spirit, .invoker_ghost_walk, .invoker_ice_wall, .invoker_sun_strike, .invoker_tornado{
+.alacrity, .quas, .wex, .exort, .invoke, .chaos_meteor, .cold_snap, .deafening_blast, .emp, .exort, .forge_spirit, .ghost_walk, .ice_wall, .sun_strike, .tornado{
   background: url(../images/sprites.png) no-repeat;
 }
 
-.invoker_alacrity{
+.alacrity{
   background-position: -360px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_quas{
+.quas{
   background-position: 0 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_wex{
+.wex{
   background-position: -90px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_exort{
+.exort{
   background-position: -180px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_invoke{
+.invoke{
   background-position: -270px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_chaos_meteor{
+.chaos_meteor{
   background-position: -450px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_cold_snap{
+.cold_snap{
   background-position: -540px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_deafening_blast{
+.deafening_blast{
   background-position: -630px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_emp{
+.emp{
   background-position: -720px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_exort{
+.exort{
   background-position: -810px 0;
   width: 90px;
   height: 90px;
 }
 
-.invoker_forge_spirit{
+.forge_spirit{
   background-position: 0 -90px ;
   width: 90px;
   height: 90px;
 }
 
-.invoker_ghost_walk{
+.ghost_walk{
   background-position: -90px -90px ;
   width: 90px;
   height: 90px;
 }
 
-.invoker_ice_wall{
+.ice_wall{
   background-position: -180px -90px ;
   width: 90px;
   height: 90px;
 }
 
-.invoker_sun_strike{
+.sun_strike{
   background-position: -270px -90px ;
   width: 90px;
   height: 90px;
 }
 
-.invoker_tornado{
+.tornado{
   background-position: -360px -90px ;
   width: 90px;
   height: 90px;

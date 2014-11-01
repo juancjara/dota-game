@@ -1,5 +1,5 @@
 var dispatcher = (function() {
-  var active = true;
+  var active = false;
   var queueKey = {};
   var queueFun = {};
   window.onkeydown = function(e) {

@@ -1,6 +1,6 @@
 Item = (data) ->
   data = data or {}
-  this.name = data.nameParam or ''
+  this.name = data.name or ''
   this.srcImg = data.srcImg or ''
   this.clickNeeded = data.clickNeeded or false
   this.secondsCd = data.secondsCd or 0
@@ -47,17 +47,12 @@ Item::fun = (click)->
 ItemsSlots = () ->
   this.slots = []
   keys = ['z', 'x', 'c', 'v', 'b', 'n'];
-  for i in [1..6]
+  nameItems = ['dagon', 'dagon 1', 'dagon 2',
+               'dagon 3', 'dagon 4', 'dagon 5' ];
+  for i in [0..5]
     obj = {
-      key: keys[i - 1],
-      item: new Item(
-        { 
-          nameParam: '' + i,
-          clickNeeded: true,
-          secondsCd: 2,
-          srcImg: 'item_dagon'
-        }
-      )
+      key: keys[i],
+      item: itemMng.items[nameItems[i]]
     } 
     this.slots.push obj
   return

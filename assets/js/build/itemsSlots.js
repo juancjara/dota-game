@@ -3,7 +3,7 @@ var Item, ItemsSlots;
 
 Item = function(data) {
   data = data || {};
-  this.name = data.nameParam || '';
+  this.name = data.name || '';
   this.srcImg = data.srcImg || '';
   this.clickNeeded = data.clickNeeded || false;
   this.secondsCd = data.secondsCd || 0;
@@ -54,18 +54,14 @@ Item.prototype.fun = function(click) {
 };
 
 ItemsSlots = function() {
-  var i, keys, obj, _i;
+  var i, keys, nameItems, obj, _i;
   this.slots = [];
   keys = ['z', 'x', 'c', 'v', 'b', 'n'];
-  for (i = _i = 1; _i <= 6; i = ++_i) {
+  nameItems = ['dagon', 'dagon 1', 'dagon 2', 'dagon 3', 'dagon 4', 'dagon 5'];
+  for (i = _i = 0; _i <= 5; i = ++_i) {
     obj = {
-      key: keys[i - 1],
-      item: new Item({
-        nameParam: '' + i,
-        clickNeeded: true,
-        secondsCd: 2,
-        srcImg: 'item_dagon'
-      })
+      key: keys[i],
+      item: itemMng.items[nameItems[i]]
     };
     this.slots.push(obj);
   }
