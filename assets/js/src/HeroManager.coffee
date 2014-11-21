@@ -16,6 +16,7 @@ HeroManager::invoker = () ->
     srcImg: 'sun_strike',
     name: 'sun strike',
     clickNeeded: true,
+    secondsCd: 2,
     dependencies: 'eee'
   }
   extraSkills.push new Skill {
@@ -84,7 +85,11 @@ HeroManager::invoker = () ->
     srcImg: 'quas',
     clickNeeded: false,
     customFun: () ->
-      eventsLog.addKey('q');
+      val = {
+        key: 'q',
+        srcImg: 'quas'
+      }
+      dispatcher.execute('addInvokerState', val)
       return
   }
   invoSkills.push new Skill {
@@ -95,7 +100,11 @@ HeroManager::invoker = () ->
     srcImg: 'wex',
     clickNeeded: false,
     customFun: () ->
-      eventsLog.addKey('w');
+      val = {
+        key: 'w',
+        srcImg: 'wex'
+      }
+      dispatcher.execute('addInvokerState', val)
       return
   }
   invoSkills.push new Skill {
@@ -106,7 +115,11 @@ HeroManager::invoker = () ->
     srcImg: 'exort',
     clickNeeded: false,
     customFun: () ->
-      eventsLog.addKey('e');
+      val = {
+        key: 'e',
+        srcImg: 'exort'
+      }
+      dispatcher.execute('addInvokerState', val)
       return
   }
 
@@ -127,13 +140,12 @@ HeroManager::invoker = () ->
 
   skillInvoke = (extraSkills) ->
     () -> 
-      console.log('extraSkills', extraSkills);
       lastSkill = dispatcher.execute 'getLastSkill'
       i = 0
       while i < extraSkills.length
         dep = extraSkills[i].dependencies
         nameSkill = extraSkills[i].name
-        if lastSkill isnt nameSkill and eventsLog.isSameState(dep)
+        if lastSkill isnt nameSkill and dispatcher.execute 'isSameInvokerState' ,dep
           dispatcher.execute "changeSkill", i
           break
         i++

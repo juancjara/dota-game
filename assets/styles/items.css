@@ -1,8 +1,33 @@
-.dagon {
+.dagon, .ethereal, .eul, .scythe, .shivas{
   background: url(../images/items.png) no-repeat;
 }
-.dagon {
+
+.dagon{
   background-position: 0 0;
+  width: 85px;
+  height: 64px;
+}
+
+.ethereal{
+  background-position: -340px 0;
+  width: 85px;
+  height: 64px;
+}
+
+.eul{
+  background-position: -255px 0;
+  width: 85px;
+  height: 64px;
+}
+
+.scythe{
+  background-position: -170px 0;
+  width: 85px;
+  height: 64px;
+}
+
+.shivas{
+  background-position: -85px 0;
   width: 85px;
   height: 64px;
 }

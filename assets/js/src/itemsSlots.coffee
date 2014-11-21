@@ -47,8 +47,8 @@ Item::fun = (click)->
 ItemsSlots = () ->
   this.slots = []
   keys = ['z', 'x', 'c', 'v', 'b', 'n'];
-  nameItems = ['dagon', 'dagon 1', 'dagon 2',
-               'dagon 3', 'dagon 4', 'dagon 5' ];
+  nameItems = ['dagon', 'ethereal', 'eul',
+               'scythe', 'shivas', 'no-item' ];
   for i in [0..5]
     obj = {
       key: keys[i],

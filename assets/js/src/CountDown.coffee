@@ -19,14 +19,17 @@ CountDown::start = () ->
 				self.stop()
 			else if counter % 1000 == 0
 				self.showOnSeconds(counter/1000)
-			#console.log counter
+			console.log counter
 			counter -= 100
 			return
 		, 100)
-	return
+	return this
 
-CountDown::stop = () ->
+CountDown::stop = (onFinish) ->
+	console.log('stop');
 	clearInterval this.interval
+	if onFinish
+		onFinish()
 
 if typeof exports isnt 'undefined'
 	exports.CountDown = CountDown

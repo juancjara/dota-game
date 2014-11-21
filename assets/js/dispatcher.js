@@ -9,7 +9,6 @@ var dispatcher = (function() {
     var code = e.keyCode ? e.keyCode: e.which;
     var key = KeyCode[code];
     if (key in queueKey) {
-      eventsLog.addState(key);
       queueKey[key]();
     }
   }
@@ -38,51 +37,6 @@ var dispatcher = (function() {
       if (name in queueFun) {
        return queueFun[name](params); 
       }
-    }
-  }
-}());
-
-
-var eventsLog = (function() {
-  var events = [' ', ' ', ' '];
-  return {
-    addState: function(key) {
-      //$('#log').prepend('<li>'+ key +'</li>');
-    },
-    addKey: function(key) {
-      var acumulate = '';
-      for (var i = 0; i < events.length - 1; i++) {
-        events[i] = events[i+1];
-        acumulate +=events[i];
-      };
-      events[2] = key;
-      acumulate += key;
-      $('#actualState').text(acumulate);
-    },
-    clear: function() {
-      $('#actualState').text('');
-      for (var i = 0; i < events.length; i++) {
-        events[i] = '';
-      };
-    },
-    getLast3States: function() {
-      var result = '';
-      for (var i = 0; i < events.length; i++) {
-        result += events[i];
-      };
-      return result
-    },
-    isSameState: function(state) {
-      var temp = [state.charAt(0), state.charAt(1), state.charAt(2)];
-      temp.sort();
-      var clone = events.slice(0);
-      clone.sort();
-      for (var i = 0; i < clone.length; i++) {
-        if (clone[i]!= temp[i]) {
-          return false;
-        }
-      };
-      return true;
     }
   }
 }());
