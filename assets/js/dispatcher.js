@@ -21,8 +21,9 @@ var dispatcher = (function() {
       active = false;
     },
     subscribeKey: function(key, fun) {
+
       queueKey[key] = fun;
-      //fun();
+      //console.log(key, queueKey[key])
     },
     unsubscribeKey: function(key) {
       queueKey[key] = function() {};
@@ -35,7 +36,12 @@ var dispatcher = (function() {
     },
     execute: function(name, params) {
       if (name in queueFun) {
-       return queueFun[name](params); 
+        return queueFun[name](params); 
+      }
+    },
+    show: function() {
+      for(var k in queueKey) {
+        console.log(k, queueKey[k]);
       }
     }
   }

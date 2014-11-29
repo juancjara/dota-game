@@ -22,7 +22,6 @@ CountDown.prototype.start = function() {
     } else if (counter % 1000 === 0) {
       self.showOnSeconds(counter / 1000);
     }
-    console.log(counter);
     counter -= 100;
   }, 100);
   return this;

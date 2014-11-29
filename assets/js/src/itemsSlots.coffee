@@ -19,23 +19,9 @@ Item::stop = () ->
   return
 
 Item::fun = (click)->
-  if this.onCooldown
-    console.log 'tan en cd no jodas'
-    return
   if !this.clickNeeded or (this.clickNeeded and click)
-    if this.secondsCd == 0
-      dispatcher.execute 'useSkill', this.name
-    else 
-      if wtfMode
-        dispatcher.execute 'useSkill', this.name
-        return  
-      this.onCooldown = true
-      dispatcher.execute 'useSkill', this.name
-      fun = this.finishCd.bind(this)
-      this.countdown = new CountDown({
-          time: this.secondsCd, 
-          onFinish: fun
-        }).start()
+    dispatcher.unsubscribe 'clickTarget', func
+    dispatcher.execute 'useSkill', this
   else
     self = this
     func = () ->

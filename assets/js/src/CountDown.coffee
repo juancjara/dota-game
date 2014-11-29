@@ -19,7 +19,6 @@ CountDown::start = () ->
 				self.stop()
 			else if counter % 1000 == 0
 				self.showOnSeconds(counter/1000)
-			console.log counter
 			counter -= 100
 			return
 		, 100)

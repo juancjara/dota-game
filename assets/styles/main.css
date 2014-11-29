@@ -1,3 +1,10 @@
+body {
+  width: 100%;
+}
+#main {
+  display: table;
+  margin: 0 auto;
+}
 .hide {
   display: none;
 }
@@ -116,6 +123,7 @@
 .main-block .challenge-block .field .target {
   background: #f00;
   border-radius: 50%;
+  cursor: pointer;
   height: 30px;
   margin: auto;
   position: relative;

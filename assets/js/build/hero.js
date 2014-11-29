@@ -9,12 +9,17 @@ Skill = function(data) {
   this.key = data.key || '';
   this.dependencies = data.dependencies || '';
   this.secondsCd = data.secondsCd || 0;
-  this.delayHitTime = data.delayHitTime || 0;
+  this.hitTime = data.hitTime || 0;
+  this.duration = data.duration || 0;
   this.onCooldown = false;
   this.countdown = null;
+  this.hitDmg = data.hitDamage || 0;
+  this.dmgPerSecond = data.damagePerSecond || 0;
+  this.endDurationDmg = data.endDurationDmg || 0;
+  this.effect = data.effect || '';
   this.clickNeeded = data.clickNeeded;
   func = function() {
-    dispatcher.execute('useSkill', this.name);
+    dispatcher.execute('useSkill', this);
   };
   this.customFun = data.customFun || func;
 };
@@ -31,28 +36,10 @@ Skill.prototype.stop = function() {
 };
 
 Skill.prototype.fun = function(click) {
-  var fun, func, self;
-  if (this.onCooldown) {
-    console.log('tan en cd no jodas');
-    return;
-  }
+  var func, self;
   if (!this.clickNeeded || (this.clickNeeded && click)) {
     dispatcher.unsubscribe('clickTarget', func);
-    if (this.secondsCd === 0) {
-      this.customFun();
-    } else {
-      if (wtfMode) {
-        this.customFun();
-        return;
-      }
-      this.onCooldown = true;
-      this.customFun();
-      fun = this.finishCd.bind(this);
-      this.countdown = new CountDown({
-        time: this.secondsCd,
-        onFinish: fun
-      }).start();
-    }
+    this.customFun();
   } else {
     self = this;
     func = function() {
@@ -60,6 +47,14 @@ Skill.prototype.fun = function(click) {
     };
     dispatcher.subscribe('clickTarget', func);
   }
+};
+
+Skill.prototype.clean = function() {
+  console.log('skill clean');
+  this.name = '';
+  this.srcImg = 'no-skill';
+  this.canBeChallenge = false;
+  this.dependencies = '';
 };
 
 Hero = function(data) {
