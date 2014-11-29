@@ -618,7 +618,7 @@ var BaseTemplate = React.createClass({
   },
   render: function() {
     return (
-      <div>
+      <div main>
         <h1 className='game-title'>DOTA PRACTICE</h1>
         <div className='main-block same-line'>
           <ChallengeTemplate 
