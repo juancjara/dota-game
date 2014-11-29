@@ -22,27 +22,10 @@ Item.prototype.stop = function() {
 };
 
 Item.prototype.fun = function(click) {
-  var fun, func, self;
-  if (this.onCooldown) {
-    console.log('tan en cd no jodas');
-    return;
-  }
+  var func, self;
   if (!this.clickNeeded || (this.clickNeeded && click)) {
-    if (this.secondsCd === 0) {
-      dispatcher.execute('useSkill', this.name);
-    } else {
-      if (wtfMode) {
-        dispatcher.execute('useSkill', this.name);
-        return;
-      }
-      this.onCooldown = true;
-      dispatcher.execute('useSkill', this.name);
-      fun = this.finishCd.bind(this);
-      this.countdown = new CountDown({
-        time: this.secondsCd,
-        onFinish: fun
-      }).start();
-    }
+    dispatcher.unsubscribe('clickTarget', func);
+    dispatcher.execute('useSkill', this);
   } else {
     self = this;
     func = function() {

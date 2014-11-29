@@ -5,11 +5,13 @@ Challenge = () ->
 	this.currentStep = 0
 	this.active = false
 	this.isOver = false
-	this.timer = new Timer
+	this.challengeLog = new ChallengeLog
+	#this.timer = new Timer
 	return
 
 Challenge::set = (list)->
-	this.timer.stop
+	this.challengeLog.finish
+	#this.timer.stop
 	i = 0
 	this.wishSteps = []
 	while i < list.length
@@ -29,13 +31,15 @@ Challenge::set = (list)->
 
 Challenge::start = () ->
 	this.clean()
-	this.timer.start()
+	#this.timer.start()
+	this.challengeLog.start()
 	this.active = true
 	this.isOver = false
 	return this
 
 Challenge::clean = () ->
 	this.currentStep = 0
+	this.challengeLog.clean()
 	i = 0
 	while i < this.wishSteps.length
 		this.wishSteps[i].done = false
@@ -51,18 +55,21 @@ Challenge::stop = () ->
 	return this
 
 Challenge::finish = () ->
-	this.timer.stop()
+	#this.timer.stop()
+	this.challengeLog.finish()
 	this.isOver = true
-	console.log 'tiempo fue de', this.timer.time, ' s'
+	console.log 'tiempo fue de', this.challengeLog.time, ' s'
 	this.active = false
 	return this
 
-Challenge::step = (skillUsed) ->
+Challenge::step = (skill) ->
+	skillUsed = skill.name
 	if !this.active
 		return this
 	if this.wishSteps.length > this.currentStep and 
 			this.wishSteps[this.currentStep].name == skillUsed
 		this.wishSteps[this.currentStep].done = true
+		this.challengeLog.add(skill)
 		this.currentStep++
 	if this.wishSteps.length == this.currentStep
 		this.finish()

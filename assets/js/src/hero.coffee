@@ -7,12 +7,17 @@ Skill = (data) ->
   this.key = data.key or ''
   this.dependencies = data.dependencies or ''
   this.secondsCd = data.secondsCd or 0
-  this.delayHitTime = data.delayHitTime or 0
+  this.hitTime = data.hitTime or 0
+  this.duration = data.duration or 0
   this.onCooldown = false
   this.countdown = null
+  this.hitDmg = data.hitDamage or 0
+  this.dmgPerSecond = data.damagePerSecond or 0
+  this.endDurationDmg = data.endDurationDmg or 0
+  this.effect = data.effect or ''
   this.clickNeeded = data.clickNeeded
   func = () ->
-    dispatcher.execute 'useSkill', this.name
+    dispatcher.execute 'useSkill', this
     return
   this.customFun = data.customFun or func
   return
@@ -28,36 +33,23 @@ Skill::stop = () ->
   return
 
 Skill::fun = (click) ->
-  #do after certain time
-
-  if this.onCooldown
-    console.log 'tan en cd no jodas'
-    return
   if !this.clickNeeded or (this.clickNeeded and click)
     dispatcher.unsubscribe 'clickTarget', func
-    if this.secondsCd == 0
-      #hit
-      # use
-      #doafter  time = 0 ? !delaySkill -> 
-      this.customFun();
-    else 
-      #hit time
-      if wtfMode
-        this.customFun();
-        return  
-      this.onCooldown = true
-      this.customFun();
-      fun = this.finishCd.bind(this)
-      this.countdown = new CountDown({
-          time: this.secondsCd, 
-          onFinish: fun
-        }).start()
+    this.customFun();
   else
     self = this
     func = () ->
       self.fun.bind(self)(true)
       return
     dispatcher.subscribe 'clickTarget', func
+  return
+
+Skill::clean = () ->
+  console.log('skill clean')
+  this.name = ''
+  this.srcImg = 'no-skill'
+  this.canBeChallenge = false
+  this.dependencies = ''
   return
 
 Hero = (data) ->

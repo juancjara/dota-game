@@ -9,7 +9,8 @@ HeroManager::invoker = () ->
     srcImg: 'cold_snap',
     name: 'cold snap',
     clickNeeded: true,
-    dependencies: 'qqq'
+    dependencies: 'qqq',
+    effect: 'stun'
   }
   extraSkills.push new Skill {
     canBeChallenge: true,
@@ -17,7 +18,9 @@ HeroManager::invoker = () ->
     name: 'sun strike',
     clickNeeded: true,
     secondsCd: 2,
-    dependencies: 'eee'
+    dependencies: 'eee',
+    hitTime: 1.7,
+    endDurationDmg: 475
   }
   extraSkills.push new Skill {
     canBeChallenge: true,
@@ -31,21 +34,26 @@ HeroManager::invoker = () ->
     name: 'ice wall',
     srcImg: 'ice_wall',
     clickNeeded: false,
-    dependencies: 'qqe'
+    dependencies: 'qqe',
+    effect: 'slow'
   }
   extraSkills.push new Skill {
     canBeChallenge: true,
     name: 'emp',
     srcImg: 'emp',
     clickNeeded: true,
-    dependencies: 'www'
+    dependencies: 'www',
+    hitTime: 2.9,
+    endDurationDmg: 275
   }
   extraSkills.push new Skill {
     canBeChallenge: true,
     name: 'tornado',
     srcImg: 'tornado',
     clickNeeded: true,
-    dependencies: 'wwq'
+    dependencies: 'wwq',
+    effect: 'invulnerable',
+    endDurationDmg: 385
   }
   extraSkills.push new Skill {
     canBeChallenge: true,
@@ -73,7 +81,8 @@ HeroManager::invoker = () ->
     name: 'chaos meteor',
     srcImg: 'chaos_meteor',
     clickNeeded: true,
-    dependencies: 'wee'
+    dependencies: 'wee',
+    hitTime: 1.3
   }
 
   invoSkills = []

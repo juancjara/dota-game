@@ -14,7 +14,9 @@ var SkillSlot = React.createClass({
 
 var SkillList = React.createClass({
   getInitialState: function() {
+    //dispatcher.subscribe('clearHero', this.clearSkill);
     dispatcher.subscribe('changeSkill', this.changeSkill);
+    dispatcher.subscribe('clearSkill', this.clearLastSkill);
     dispatcher.subscribe('getLastSkill', this.getLastSkill);
     dispatcher.subscribe('useExtraSkill', this.useExtraSkill);
     return {
@@ -22,15 +24,10 @@ var SkillList = React.createClass({
       lastSkill: ''
     }
   },
-  componentWillReceiveProps: function(nextProps) {
-    
-    for (var i = 0; i < this.state.skills.length; i++) {
-      var actualSkill = this.state.skills[i];
-      var keyBind = actualSkill.key;
-
-      dispatcher.subscribeKey(keyBind, 
-        this.createFun(actualSkill.obj));
-    };
+  clearLastSkill: function() {
+    this.setState({
+      lastSkill: ''
+    });
   },
   createFun: function(obj) {
     return function(param) {
@@ -39,6 +36,12 @@ var SkillList = React.createClass({
   },
   useExtraSkill: function(index) {
     this.state.skills[index].obj.fun();
+  },
+  clearSkill: function() {
+    var skills = this.state.skills;
+    skills[3].obj = new Skill({
+      key: 'd'
+    })
   },
   getLastSkill: function() {
     return this.state.lastSkill;
@@ -50,7 +53,7 @@ var SkillList = React.createClass({
     //TODO si no es wtf actualizar al nuevo key
     var extraSkills = this.props.extraSkills;
     var skills = this.state.skills;
-    var keyBind;
+
     var temp4fun = skills[4].obj.fun;
     var temp3fun = skills[3].obj.fun;
 
@@ -298,6 +301,11 @@ var SelectChallenge = React.createClass({
   setChallenge: function() {
     dispatcher.execute('setChallenge', this.state.steps);
   },
+  clearChallenge: function() {
+    this.setState({
+      steps: []
+    });
+  },
   render: function() {
     var skillsToChooseFrom = [];
     var extraSkillsToChooseFrom = [];
@@ -330,6 +338,7 @@ var SelectChallenge = React.createClass({
     return (
       <div className='select-challenge same-line-top'>
         <button onClick={this.setChallenge}>Set challenge</button>
+        <button onClick={this.clearChallenge}>Clear</button>
         <ul className='clear-list'>
           {this.state.steps.map(function(step ,i) {
             var className ='same-line zoom-challenge '+ step.srcImg;
@@ -414,23 +423,25 @@ var ChallengeTemplate = React.createClass({
       startButton: 'Start'
     });    
   },
-  action: function(skillName) {
+  action: function(skill) {
     this.setState({
-      challenge: this.state.challenge.step(skillName)
+      challenge: this.state.challenge.step(skill)
     });
     if (!this.state.challenge.active) {
       dispatcher.offEvents();
     }
   },
   setMessage: function(message) {
-    console.log('ggg');
     this.setState({
       message: message
     });
   },
-  startChallenge: function() {
+  clearChallenge: function() {
     dispatcher.execute('clearInvokerState');
     dispatcher.unsubscribe('clickTarget');
+  },
+  startChallenge: function() {
+    this.clearChallenge();
     dispatcher.onEvents();
     this.setState({
       challenge : this.state.challenge.start(),
@@ -439,8 +450,10 @@ var ChallengeTemplate = React.createClass({
     });
   },
   onStart: function() {
+    dispatcher.execute('clearHero');
     var countDown = this.state.countDown;
     var self = this;
+    
     var onFinish = function() {
       var c = new CountDown({
         onFinish: self.startChallenge,
@@ -478,8 +491,7 @@ var ChallengeTemplate = React.createClass({
     
   },
   stop: function() {
-    dispatcher.execute('clearInvokerState');
-    dispatcher.unsubscribe('clickTarget');
+    this.clearChallenge();
     dispatcher.offEvents();
     this.setState({
       challenge: this.state.challenge.stop()
@@ -502,7 +514,7 @@ var ChallengeTemplate = React.createClass({
         </button>
         <div 
           className={show}>
-          Tiempo {this.state.challenge.timer.time} segundos
+          Tiempo {this.state.challenge.challengeLog.time} segundos
         </div>
         <ul className='clear-list'>
           {this.state.challenge.wishSteps.map(function(step ,i) {
@@ -531,6 +543,7 @@ var ChallengeTemplate = React.createClass({
 
 var BaseTemplate = React.createClass({
   getInitialState: function() {
+    dispatcher.subscribe('clearHero', this.clearHero);
     return {
       data: this.props.data,
       itemsSlots: new ItemsSlots()
@@ -541,31 +554,67 @@ var BaseTemplate = React.createClass({
     heroSelected = heroMng.heros['invoker'];
     this.updateHero(heroSelected);
   },
+  createFun: function(obj) {
+    return function(param) {
+      obj.fun(param);
+    }
+  },
   updateHero: function(newHero) {
     var skills;
     var actualSkill;
     var keyBind;
     var data;
     data = this.state.data;
-    //clean keys
-    for (var i = 0; i < this.state.data.skills.length; i++) {
-      actualSkill = this.state.data.skills[i];
-      keyBind = actualSkill.key;
-      
-      dispatcher.unsubscribeKey(keyBind);
-    };
-    //set new skills
+    
     skills = newHero.skills;
+
     for (var i = 0; i < skills.length; i++) {
       data.skills[i].obj = skills[i];
+      actualSkill = skills[i];
+      keyBind = actualSkill.key;
+      dispatcher.subscribeKey(keyBind, 
+        this.createFun(actualSkill));
     };
     data.name = newHero.name;
     data.srcImg = newHero.srcImg;
     data.extraSkills = newHero.extraSkills;
 
+    var createFun = function createFun(obj) {
+      return function(param) {
+        obj.fun(param);
+      }
+    }
+
     this.setState({
       data: data
     });
+  },
+  clearHero: function() {
+    
+    dispatcher.execute('clearSkill');
+    dispatcher.subscribeKey('d', function() {
+      dispatcher.execute('useExtraSkill', 3);
+    });
+    dispatcher.subscribeKey('f', function() {
+      dispatcher.execute('useExtraSkill', 4);
+    });
+    var data = this.state.data;
+    data.skills[3].obj = new Skill({
+      key: 'd',
+      customFun: function() {
+        
+      }
+    });
+    data.skills[4].obj = new Skill({
+      key: 'f',
+      customFun: function() {
+        
+      }
+    });
+    this.setState({
+      data: data
+    });
+
   },
   render: function() {
     return (
