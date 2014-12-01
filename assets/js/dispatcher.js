@@ -21,9 +21,7 @@ var dispatcher = (function() {
       active = false;
     },
     subscribeKey: function(key, fun) {
-
       queueKey[key] = fun;
-      //console.log(key, queueKey[key])
     },
     unsubscribeKey: function(key) {
       queueKey[key] = function() {};

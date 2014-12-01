@@ -52,6 +52,7 @@ ChallengeLog.prototype.finish = function() {
     i++;
   }
   console.log(this.summary);
+  console.log(this.summary[0].srcImg);
   return this;
 };
 

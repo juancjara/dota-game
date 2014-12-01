@@ -6,6 +6,12 @@ Item = (data) ->
   this.secondsCd = data.secondsCd or 0
   this.onCooldown = false
   this.countdown = null
+  this.hitTime = data.hitTime or 0
+  this.duration = data.duration or 0
+  this.hitDmg = data.hitDamage or 0
+  this.dmgPerSecond = data.damagePerSecond or 0
+  this.endDurationDmg = data.endDurationDmg or 0
+  this.effect = data.effect or ''
   return
 
 Item::finishCd = () ->

@@ -7,31 +7,41 @@ ItemManager::create = () ->
     name: 'dagon',
     clickNeeded: true,
     secondsCd: 2,
-    srcImg: 'dagon'
+    srcImg: 'dagon',
+    endDurationDmg: 800
   }
   this.items['ethereal'] = new Item {
     name: 'ethereal',
     clickNeeded: true,
     secondsCd: 2,
-    srcImg: 'ethereal'
+    srcImg: 'ethereal',
+    endDurationDmg: 75
+
   }
   this.items['eul'] = new Item {
     name: 'eul',
     clickNeeded: true,
     secondsCd: 2,
-    srcImg: 'eul'
+    srcImg: 'eul',
+    duration: 2.5,
+    endDurationDmg: 50,
+    effect: 'invulnerable'
   }
   this.items['scythe'] = new Item {
     name: 'scythe',
     clickNeeded: true,
     secondsCd: 2,
-    srcImg: 'scythe'
+    srcImg: 'scythe',
+    duration: 3.5,
+    effect: 'hex'
   }
   this.items['shivas'] = new Item {
-    name: 'shivas',
+    name: 'shiva',
     clickNeeded: false,
     secondsCd: 2,
-    srcImg: 'shivas'
+    srcImg: 'shivas',
+    endDurationDmg: 200,
+    effect: 'slow'
   }
   this.items['no-item'] = new Item {
     name: '',

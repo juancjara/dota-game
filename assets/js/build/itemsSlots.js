@@ -8,6 +8,12 @@ Item = function(data) {
   this.secondsCd = data.secondsCd || 0;
   this.onCooldown = false;
   this.countdown = null;
+  this.hitTime = data.hitTime || 0;
+  this.duration = data.duration || 0;
+  this.hitDmg = data.hitDamage || 0;
+  this.dmgPerSecond = data.damagePerSecond || 0;
+  this.endDurationDmg = data.endDurationDmg || 0;
+  this.effect = data.effect || '';
 };
 
 Item.prototype.finishCd = function() {
