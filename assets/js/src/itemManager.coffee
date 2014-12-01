@@ -35,7 +35,7 @@ ItemManager::create = () ->
     duration: 3.5,
     effect: 'hex'
   }
-  this.items['shivas'] = new Item {
+  this.items['shiva'] = new Item {
     name: 'shiva',
     clickNeeded: false,
     secondsCd: 2,
