@@ -421,8 +421,30 @@ var ChallengeTemplate = React.createClass({
       challenge: a,
       message: 'Choose challenge',
       startButton: 'Start',
-      countDown: null
+      countDown: null,
+      urlChallenge: '<- Challenge your friend'
     };
+  },
+  componentDidMount: function() {
+    var id = $('#challenge').text() || '';
+    if (id.length) {
+      API.consume('getChallenge', 
+        {id: id},
+        this.searchChallenge);
+    }
+  },
+  searchChallenge: function(err, res) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (res.msg != 'OK') {
+      console.log(res.msg);
+      return;
+    }
+    var data = res.data;
+    var steps = data.list;
+    this.setChallenge(steps);
   },
   setChallenge: function(steps) {
     this.stop();
@@ -438,6 +460,14 @@ var ChallengeTemplate = React.createClass({
     if (!this.state.challenge.active) {
       dispatcher.offEvents();
     }
+  },
+  generateUrl: function() {
+    var data = {};
+    data.time = this.state.challenge.challengeLog.time;
+    data.list = this.state.challenge.wishSteps;
+
+    API.consume('createChallenge',
+      {data: data}, this.setUrlChallenge);
   },
   setMessage: function(message) {
     this.setState({
@@ -501,8 +531,24 @@ var ChallengeTemplate = React.createClass({
   stop: function() {
     this.clearChallenge();
     dispatcher.offEvents();
+    var challenge = this.state.challenge.stop();
+    
     this.setState({
-      challenge: this.state.challenge.stop()
+      challenge: challenge
+    });
+  },
+  setUrlChallenge: function(err, res) { 
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (res.msg != 'OK') {
+      console.log(res.msg);
+      return;
+    }
+    console.log(res);
+    this.setState({
+      urlChallenge: res.url
     });
   },
   clickTarget: function() {
@@ -522,7 +568,16 @@ var ChallengeTemplate = React.createClass({
         </button>
         <div 
           className={show}>
-          Tiempo {this.state.challenge.challengeLog.time} segundos
+          <div>
+            Tiempo {this.state.challenge.challengeLog.time} segundos
+          </div>
+          <button 
+            onClick={this.generateUrl}>
+            Generate Url  
+          </button>
+          <span>
+            <b> {this.state.urlChallenge}</b>
+          </span>
         </div>
         <ul className='clear-list'>
           {this.state.challenge.wishSteps.map(function(step ,i) {

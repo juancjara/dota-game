@@ -40,7 +40,7 @@ ItemsSlots = () ->
   this.slots = []
   keys = ['z', 'x', 'c', 'v', 'b', 'n'];
   nameItems = ['dagon', 'ethereal', 'eul',
-               'scythe', 'shivas', 'no-item' ];
+               'scythe', 'shiva', 'no-item' ];
   for i in [0..5]
     obj = {
       key: keys[i],

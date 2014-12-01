@@ -7,9 +7,12 @@
     "test": "test"
   },
   "dependencies": {
+    "body-parser": "^1.9.3",
     "coffee-script": "^1.8.0",
     "express": "^4.10.4",
-    "jade": "^1.8.0"
+    "express-session": "^1.9.2",
+    "jade": "^1.8.0",
+    "mongoose": "^3.8.19"
   },
   "devDependencies": {
     "gulp": "^3.8.10",

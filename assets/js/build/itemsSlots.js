@@ -45,7 +45,7 @@ ItemsSlots = function() {
   var i, keys, nameItems, obj, _i;
   this.slots = [];
   keys = ['z', 'x', 'c', 'v', 'b', 'n'];
-  nameItems = ['dagon', 'ethereal', 'eul', 'scythe', 'shivas', 'no-item'];
+  nameItems = ['dagon', 'ethereal', 'eul', 'scythe', 'shiva', 'no-item'];
   for (i = _i = 0; _i <= 5; i = ++_i) {
     obj = {
       key: keys[i],
