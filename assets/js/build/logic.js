@@ -547,8 +547,9 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
       return;
     }
     console.log(res);
+    var url = window.location.host +'/'+res.url;
     this.setState({
-      urlChallenge: res.url
+      urlChallenge: url
     });
   },
   clickTarget: function() {

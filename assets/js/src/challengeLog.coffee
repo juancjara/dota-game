@@ -35,13 +35,12 @@ ChallengeLog::finish = () ->
   len = this.tryhard.length
   while i < len
     elem = this.tryhard[i].obj
-    time = (this.tryhard[i].time - this.startTime) / 1000
+    time = (this.tryhard[i].time - this.startTime)
     result = {}
     result.srcImg = elem.srcImg
     result.castTime = time
     result.hitTime = time + elem.hitTime
     result.duration = elem.duration + result.hitTime
-    result.success = true
 
     this.summary.push result
     i++
