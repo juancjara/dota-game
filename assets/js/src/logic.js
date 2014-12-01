@@ -2,11 +2,15 @@
 
 var SkillSlot = React.createClass({
   render: function() {
-    var className = 'same-line skill '+this.props.item.srcImg;
+    var className = 'same-line skill '+this.props.item.obj.srcImg;
     return (
       <li 
         className={className}
         key= {this.props.key}>
+        <div 
+          className='key-bind'>
+          {this.props.item.key}
+        </div>
       </li>
     );
   }
@@ -72,7 +76,7 @@ var SkillList = React.createClass({
           {this.state.skills.map(function(item, i) {
             return ( <SkillSlot 
               key= {i}
-              item= {item.obj} />
+              item= {item} />
             )
           }, this)}
         </ul>
@@ -83,11 +87,15 @@ var SkillList = React.createClass({
 
 var ItemSlot = React.createClass({
   render: function() {
-    var className = 'item same-line '+this.props.item.srcImg;
+    var className = 'item same-line '+this.props.slot.item.srcImg;
     return (
       <li 
         className={className}
         key= {this.props.key}>
+        <div 
+          className='key-bind'>
+          {this.props.slot.key}
+        </div>
       </li>
     );
   }
@@ -122,7 +130,7 @@ var ItemList = React.createClass({
             return (
               <ItemSlot
                 key= {i}
-                item= {slot.item} />
+                slot= {slot} />
             )
           }, this)}
         </ul>
@@ -541,6 +549,21 @@ var ChallengeTemplate = React.createClass({
   }  
 });
 
+Summary = React.createClass({
+  getInitialState: function() {
+    return {
+      show: false
+    }
+  },
+  render: function() {
+    return (
+      <div class='summary'>
+        Summary
+      </div>
+    )
+  }
+});
+
 var BaseTemplate = React.createClass({
   getInitialState: function() {
     dispatcher.subscribe('clearHero', this.clearHero);
@@ -569,8 +592,8 @@ var BaseTemplate = React.createClass({
     skills = newHero.skills;
 
     for (var i = 0; i < skills.length; i++) {
-      data.skills[i].obj = skills[i];
       actualSkill = skills[i];
+      data.skills[i].obj = actualSkill;
       keyBind = actualSkill.key;
       dispatcher.subscribeKey(keyBind, 
         this.createFun(actualSkill));
@@ -591,30 +614,31 @@ var BaseTemplate = React.createClass({
   },
   clearHero: function() {
     
-    dispatcher.execute('clearSkill');
-    dispatcher.subscribeKey('d', function() {
-      dispatcher.execute('useExtraSkill', 3);
-    });
-    dispatcher.subscribeKey('f', function() {
-      dispatcher.execute('useExtraSkill', 4);
-    });
-    var data = this.state.data;
-    data.skills[3].obj = new Skill({
-      key: 'd',
-      customFun: function() {
-        
-      }
-    });
-    data.skills[4].obj = new Skill({
-      key: 'f',
-      customFun: function() {
-        
-      }
-    });
-    this.setState({
-      data: data
-    });
-
+    if (this.state.data.name == 'invoker') {
+      dispatcher.execute('clearSkill');
+      dispatcher.subscribeKey('d', function() {
+        dispatcher.execute('useExtraSkill', 3);
+      });
+      dispatcher.subscribeKey('f', function() {
+        dispatcher.execute('useExtraSkill', 4);
+      });
+      var data = this.state.data;
+      data.skills[3].obj = new Skill({
+        key: 'd',
+        customFun: function() {
+          
+        }
+      });
+      data.skills[4].obj = new Skill({
+        key: 'f',
+        customFun: function() {
+          
+        }
+      });
+      this.setState({
+        data: data
+      });
+    }
   },
   render: function() {
     return (
@@ -634,6 +658,7 @@ var BaseTemplate = React.createClass({
           <div className='topics'>
             Some skills require a click on an enemy(red circle) to be use.
           </div>
+          <Summary />
         </div>
         <SelectChallenge
           heroSelected={this.state.data}

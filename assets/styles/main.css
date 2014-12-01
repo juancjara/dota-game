@@ -52,6 +52,7 @@ body {
   float: left;
 }
 .select-challenge {
+  margin-left: 2px;
   width: 300px;
 }
 .select-challenge .challenge-list {
@@ -95,6 +96,16 @@ body {
 .main-block .hero-data .hero-item-slots .item {
   border: 3px solid #808080;
   margin: 0 1px;
+}
+.main-block .key-bind {
+  background-color: #808080;
+  border: 1px solid #fff;
+  color: #000;
+  font-size: 1.2em;
+  height: 1.2em;
+  position: absolute;
+  text-align: center;
+  width: 1.2em;
 }
 .main-block .challenge-block .field {
   background: #000;

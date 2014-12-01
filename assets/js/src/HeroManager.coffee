@@ -53,6 +53,7 @@ HeroManager::invoker = () ->
     clickNeeded: true,
     dependencies: 'wwq',
     effect: 'invulnerable',
+    duration: 2.5,
     endDurationDmg: 385
   }
   extraSkills.push new Skill {
