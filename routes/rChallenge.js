@@ -6,10 +6,9 @@ exports.create = function(req, res) {
   ChaFriend.create(req.body.data, 
     function(err, data) {
       err = err || 'OK';
-      var url = config.baseUrl + data._id;
       res.send({
         msg: err,
-        url: url
+        url: data._id
       });
     }
   );
