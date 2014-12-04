@@ -41,6 +41,7 @@ ChallengeLog::finish = () ->
     result.castTime = time
     result.hitTime = time + elem.hitTime
     result.duration = elem.duration + result.hitTime
+    result.id = i
 
     this.summary.push result
     i++
