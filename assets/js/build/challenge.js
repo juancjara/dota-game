@@ -7,7 +7,7 @@ Challenge = function() {
   this.currentStep = 0;
   this.active = false;
   this.isOver = false;
-  this.challengeLog = new ChallengeLog;
+  this.challengeLog = new ChallengeLog();
 };
 
 Challenge.prototype.set = function(list) {
@@ -65,6 +65,11 @@ Challenge.prototype.finish = function() {
   this.isOver = true;
   console.log('tiempo fue de', this.challengeLog.time, ' s');
   this.active = false;
+  return this;
+};
+
+Challenge.prototype.getSummary = function() {
+  this.challengeLog.getSummary();
   return this;
 };
 

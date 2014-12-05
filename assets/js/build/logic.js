@@ -444,6 +444,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     }
     var data = res.data;
     var steps = data.list;
+    var msg = "";
     this.setChallenge(steps);
   },
   setChallenge: function(steps) {
@@ -605,7 +606,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
   }  
 });
 
-Summary = React.createClass({displayName: 'Summary',
+SummaryView = React.createClass({displayName: 'SummaryView',
   getInitialState: function() {
     return {
       show: false
