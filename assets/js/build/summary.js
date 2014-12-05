@@ -1,11 +1,13 @@
 var Summary;
 
-Summary = function() {
+Summary = function(data) {
+  data = data || {};
   this.totalDmg = 0;
   this.time = 0;
   this.events = [];
   this.invulnerable = 0;
   this.result = [];
+  this.challengeLog = data.challengeLog || void 0;
 };
 
 Summary.prototype.add = function(item) {
@@ -24,13 +26,15 @@ Summary.prototype.generate = function() {
   while (i < len) {
     item = this.result[i];
     if (item.type === 'invulnerable') {
-      this.invulnerable += item["switch"];
+      this.invulnerable += item.toggle;
+      this.challengeLog.setStatus(item.index, true);
     } else {
-      if (this.type === 'damage') {
+      if (item.type === 'damage') {
         if (this.invulnerable > 0) {
-
+          this.challengeLog.setStatus(item.index, false);
         } else {
           this.totalDmg += this.damage;
+          this.challengeLog.setStatus(item.index, true);
         }
       }
     }

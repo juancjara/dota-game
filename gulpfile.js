@@ -1,8 +1,8 @@
 var gulp = require('gulp');
 var stylus = require('gulp-stylus');
-var jsx = require('gulp-jsx');
 var coffee = require('gulp-coffee');
 var gutil = require('gulp-util');
+//var react = require('gulp-react');
 
 var stylusDir = './assets/styles/src/*.styl';
 var jsxDir = './assets/js/src/*.js';
@@ -13,12 +13,12 @@ gulp.task('css', function () {
       .pipe(stylus({compress: false}))
       .pipe(gulp.dest('./assets/styles'));
 });
-
-gulp.task('jsx', function () {  
+/*
+gulp.task('jsx', function () {
   return gulp.src(jsxDir)
-      .pipe(jsx())
-      .pipe(gulp.dest('./assets/js/build'));
-});
+    .pipe(react())
+    .pipe(gulp.dest('./assets/js/build'));
+});*/
 
 gulp.task('coffee', function() {
   gulp.src(coffeeDir)

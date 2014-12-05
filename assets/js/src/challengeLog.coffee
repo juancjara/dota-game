@@ -28,6 +28,10 @@ ChallengeLog::add = (obj) ->
   }
   return this
 
+ChallengeLog::setStatus = (index, status) ->
+  this.summary[index].status = status;
+  return this
+
 ChallengeLog::finish = () ->
   i = 0
   this.finishTime = (new Date()).getTime()
@@ -41,13 +45,11 @@ ChallengeLog::finish = () ->
     result.castTime = time
     result.hitTime = time + elem.hitTime
     result.duration = elem.duration + result.hitTime
-    result.id = i
-
+    result.index = i
+    result.status = false
     this.summary.push result
     i++
 
-  console.log this.summary
-  console.log this.summary[0].srcImg
   return this
 
 if typeof exports isnt 'undefined'

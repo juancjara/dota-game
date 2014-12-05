@@ -444,6 +444,7 @@ var ChallengeTemplate = React.createClass({
     }
     var data = res.data;
     var steps = data.list;
+    var msg = "";
     this.setChallenge(steps);
   },
   setChallenge: function(steps) {

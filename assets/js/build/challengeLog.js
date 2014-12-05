@@ -33,6 +33,11 @@ ChallengeLog.prototype.add = function(obj) {
   return this;
 };
 
+ChallengeLog.prototype.setStatus = function(index, status) {
+  this.summary[index].status = status;
+  return this;
+};
+
 ChallengeLog.prototype.finish = function() {
   var elem, i, len, result, time;
   i = 0;
@@ -47,12 +52,11 @@ ChallengeLog.prototype.finish = function() {
     result.castTime = time;
     result.hitTime = time + elem.hitTime;
     result.duration = elem.duration + result.hitTime;
-    result.id = i;
+    result.index = i;
+    result.status = false;
     this.summary.push(result);
     i++;
   }
-  console.log(this.summary);
-  console.log(this.summary[0].srcImg);
   return this;
 };
 
