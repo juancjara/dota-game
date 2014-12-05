@@ -606,7 +606,7 @@ var ChallengeTemplate = React.createClass({
   }  
 });
 
-Summary = React.createClass({
+SummaryView = React.createClass({
   getInitialState: function() {
     return {
       show: false

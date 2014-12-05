@@ -5,7 +5,7 @@ Challenge = () ->
 	this.currentStep = 0
 	this.active = false
 	this.isOver = false
-	this.challengeLog = new ChallengeLog
+	this.challengeLog = new ChallengeLog()
 	#this.timer = new Timer
 	return
 
@@ -54,12 +54,17 @@ Challenge::stop = () ->
 		this.isOver = false
 	return this
 
+
 Challenge::finish = () ->
 	#this.timer.stop()
 	this.challengeLog.finish()
 	this.isOver = true
 	console.log 'tiempo fue de', this.challengeLog.time, ' s'
 	this.active = false
+	return this
+
+Challenge::getSummary = () ->
+	this.challengeLog.getSummary()
 	return this
 
 Challenge::step = (skill) ->

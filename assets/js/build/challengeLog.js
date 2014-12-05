@@ -6,16 +6,19 @@ ChallengeLog = function() {
   this.startTime = 0.0;
   this.finishTime = 0.0;
   this.time = 0.0;
-  this.summary = [];
+  this.listSkills = [];
+  this.summary = new Summary({
+    challengeLog: this
+  });
 };
 
 ChallengeLog.prototype.clean = function() {
   this.queue = {};
   this.tryhard = [];
-  this.startTime = 0.0;
+  this.startTime = -2;
   this.finishTime = 0.0;
   this.time = 0.0;
-  this.summary = [];
+  this.listSkills = [];
   return this;
 };
 
@@ -34,15 +37,20 @@ ChallengeLog.prototype.add = function(obj) {
 };
 
 ChallengeLog.prototype.setStatus = function(index, status) {
-  this.summary[index].status = status;
+  this.listSkills[index].status = status;
   return this;
 };
 
 ChallengeLog.prototype.finish = function() {
-  var elem, i, len, result, time;
-  i = 0;
   this.finishTime = (new Date()).getTime();
   this.time = (this.finishTime - this.startTime) / 1000;
+  this.getSummary();
+  return this;
+};
+
+ChallengeLog.prototype.getSummary = function() {
+  var elem, i, len, result, time;
+  i = 0;
   len = this.tryhard.length;
   while (i < len) {
     elem = this.tryhard[i].obj;
@@ -50,13 +58,40 @@ ChallengeLog.prototype.finish = function() {
     result = {};
     result.srcImg = elem.srcImg;
     result.castTime = time;
-    result.hitTime = time + elem.hitTime;
-    result.duration = elem.duration + result.hitTime;
-    result.index = i;
+    result.hitTime = time + elem.hitTime * 1000;
+    result.duration = elem.duration * 1000 + result.hitTime;
     result.status = false;
-    this.summary.push(result);
+    this.listSkills.push(result);
+    switch (elem.effect) {
+      case 'invulnerable':
+        this.summary.add({
+          name: elem.name,
+          effect: elem.effect,
+          toggle: 1,
+          time: result.hitTime,
+          index: i
+        });
+        this.summary.add({
+          name: elem.name,
+          effect: elem.effect,
+          toggle: -1,
+          time: result.duration,
+          index: i
+        });
+        break;
+      default:
+        this.summary.add({
+          name: elem.name,
+          effect: elem.effect,
+          time: result.duration,
+          damage: elem.endDurationDmg,
+          index: i
+        });
+    }
     i++;
   }
+  this.summary.generate();
+  console.log('listSkills', this.listSkills);
   return this;
 };
 

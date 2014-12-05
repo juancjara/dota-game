@@ -10,6 +10,15 @@ Summary = function(data) {
   this.challengeLog = data.challengeLog || void 0;
 };
 
+Summary.prototype.clean = function() {
+  this.totalDmg = 0;
+  this.time = 0;
+  this.invulnerable = 0;
+  this.result = [];
+  this.events = [];
+  return this;
+};
+
 Summary.prototype.add = function(item) {
   this.events.push(item);
   return this;
@@ -25,17 +34,15 @@ Summary.prototype.generate = function() {
   len = this.result.length;
   while (i < len) {
     item = this.result[i];
-    if (item.type === 'invulnerable') {
+    if (item.effect === 'invulnerable') {
       this.invulnerable += item.toggle;
       this.challengeLog.setStatus(item.index, true);
     } else {
-      if (item.type === 'damage') {
-        if (this.invulnerable > 0) {
-          this.challengeLog.setStatus(item.index, false);
-        } else {
-          this.totalDmg += this.damage;
-          this.challengeLog.setStatus(item.index, true);
-        }
+      if (this.invulnerable > 0) {
+        this.challengeLog.setStatus(item.index, false);
+      } else {
+        this.totalDmg += this.damage;
+        this.challengeLog.setStatus(item.index, true);
       }
     }
     i++;
