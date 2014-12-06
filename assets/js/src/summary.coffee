@@ -3,7 +3,10 @@ Summary = (data) ->
   this.totalDmg = 0
   this.time = 0
   this.events = []
-  this.invulnerable = 0
+  this.invulnerable = {
+    value: 0,
+    index: null
+  }
   this.result = []
   this.challengeLog = data.challengeLog || undefined
   return
@@ -11,7 +14,10 @@ Summary = (data) ->
 Summary::clean = () ->
   this.totalDmg = 0
   this.time = 0
-  this.invulnerable = 0
+  this.invulnerable = {
+    value: 0,
+    index: null
+  }
   this.result = []
   this.events = []
   return this
@@ -31,11 +37,18 @@ Summary::generate = () ->
   while i < len
     item = this.result[i]
     
-    if item.effect == 'invulnerable' and this.invulnerable == 0
-      this.invulnerable += item.toggle
-      this.challengeLog.setStatus(item.index, true)
+    if item.effect == 'invulnerable'
+      canBeUse = false
+      isSameAction = item.index == this.invulnerable.index
+      valInvulnerable = this.invulnerable.value;
+      if valInvulnerable == 0 or (valInvulnerable > 0 and isSameAction)
+        canBeUse = true
+        this.invulnerable.value += item.toggle
+        this.invulnerable.index = item.index
+      
+      this.challengeLog.setStatus(item.index, canBeUse)
     else
-      if this.invulnerable > 0
+      if this.invulnerable.value > 0
         this.challengeLog.setStatus(item.index, false)
       else
         this.totalDmg += this.damage

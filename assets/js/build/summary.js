@@ -5,7 +5,10 @@ Summary = function(data) {
   this.totalDmg = 0;
   this.time = 0;
   this.events = [];
-  this.invulnerable = 0;
+  this.invulnerable = {
+    value: 0,
+    index: null
+  };
   this.result = [];
   this.challengeLog = data.challengeLog || void 0;
 };
@@ -13,7 +16,10 @@ Summary = function(data) {
 Summary.prototype.clean = function() {
   this.totalDmg = 0;
   this.time = 0;
-  this.invulnerable = 0;
+  this.invulnerable = {
+    value: 0,
+    index: null
+  };
   this.result = [];
   this.events = [];
   return this;
@@ -25,7 +31,7 @@ Summary.prototype.add = function(item) {
 };
 
 Summary.prototype.generate = function() {
-  var compare, i, item, len;
+  var canBeUse, compare, i, isSameAction, item, len, valInvulnerable;
   compare = function(a, b) {
     return a.time - b.time;
   };
@@ -34,11 +40,18 @@ Summary.prototype.generate = function() {
   len = this.result.length;
   while (i < len) {
     item = this.result[i];
-    if (item.effect === 'invulnerable' && this.invulnerable === 0) {
-      this.invulnerable += item.toggle;
-      this.challengeLog.setStatus(item.index, true);
+    if (item.effect === 'invulnerable') {
+      canBeUse = false;
+      isSameAction = item.index === this.invulnerable.index;
+      valInvulnerable = this.invulnerable.value;
+      if (valInvulnerable === 0 || (valInvulnerable > 0 && isSameAction)) {
+        canBeUse = true;
+        this.invulnerable.value += item.toggle;
+        this.invulnerable.index = item.index;
+      }
+      this.challengeLog.setStatus(item.index, canBeUse);
     } else {
-      if (this.invulnerable > 0) {
+      if (this.invulnerable.value > 0) {
         this.challengeLog.setStatus(item.index, false);
       } else {
         this.totalDmg += this.damage;

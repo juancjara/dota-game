@@ -89,7 +89,7 @@ describe('Summary', function() {
       s.generate();
       assert.deepEqual(arr, c.summary);
     })
-
+    
     it('skill doesnt hit', function() {
       var time = (new Date()).getTime();
 
@@ -134,7 +134,7 @@ describe('Summary', function() {
       s.generate();
       assert.deepEqual(arr, c.summary);
     })
-
+    
   })
 
 })
