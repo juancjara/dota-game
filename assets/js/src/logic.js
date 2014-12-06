@@ -557,7 +557,7 @@ var ChallengeTemplate = React.createClass({
     dispatcher.execute('clickTarget');
   },
   render: function() {
-    var show = this.state.challenge.isOver? '': 'hidden';
+    var show = this.state.challenge.isOver? '': 'hide';
     var classMessage = 'message-block ';
     if (this.state.message.length == 0 ){
       classMessage = ' hide'
@@ -568,6 +568,15 @@ var ChallengeTemplate = React.createClass({
           onClick={this.start}>
           {this.state.startButton}
         </button>
+        <ul className='clear-list'>
+          {this.state.challenge.wishSteps.map(function(step ,i) {
+            return (
+              <ChallengeStep
+                key= {i}
+                item= {step} />
+            )
+          }, this)}
+        </ul>
         <div 
           className={show}>
           <div>
@@ -580,16 +589,9 @@ var ChallengeTemplate = React.createClass({
           <span>
             <b> {this.state.urlChallenge}</b>
           </span>
+          <SummaryView 
+            summary = {this.state.challenge.challengeLog}/>
         </div>
-        <ul className='clear-list'>
-          {this.state.challenge.wishSteps.map(function(step ,i) {
-            return (
-              <ChallengeStep
-                key= {i}
-                item= {step} />
-            )
-          }, this)}
-        </ul>
         <div className='field'>
           <div className='message-block'>
             <div className='message'>
@@ -607,15 +609,49 @@ var ChallengeTemplate = React.createClass({
 });
 
 SummaryView = React.createClass({
-  getInitialState: function() {
-    return {
-      show: false
-    }
+  format3Decimals: function(num) {
+    return Math.round(num * 1000) / 1000;
   },
   render: function() {
+    var self = this;
+    var actions = this.props.summary.listSkills.map(function (action) {
+      console.log(action.status);
+      var className ='same-line zoom-challenge '+ action.srcImg;
+      var castTime = self.format3Decimals(action.castTime);
+      var hitTime = self.format3Decimals(action.hitTime);
+      var duration = self.format3Decimals(action.duration);
+      return( 
+        <tr>
+          <td>
+            <div className={className}>
+            </div>
+          </td>
+          <td>{castTime}</td>
+          <td>{hitTime}</td>
+          <td>{duration}</td>
+          <td>
+            <input type="checkbox" checked={action.status} />
+          </td>
+        </tr>
+      );
+    });
     return (
-      <div class='summary'>
-        Summary
+      <div className='summary'>
+        Summary 
+        <table className='summary-table'>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>cast time</th>
+              <th>hit time</th>
+              <th>duration time</th>
+              <th>status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {actions}
+          </tbody>
+        </table>    
       </div>
     )
   }
@@ -715,7 +751,6 @@ var BaseTemplate = React.createClass({
           <div className='topics'>
             Some skills require a click on an enemy(red circle) to be use.
           </div>
-          <Summary />
         </div>
         <SelectChallenge
           heroSelected={this.state.data}
@@ -724,8 +759,3 @@ var BaseTemplate = React.createClass({
     );
   }
 });
-
-
-//TODO setear skill a key solo una vz xq sino se cambia 
-//legacyMode en cualquier lugar
-//y gg nadie sabe en q momento fue
