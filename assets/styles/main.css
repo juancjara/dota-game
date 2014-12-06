@@ -141,3 +141,10 @@
   top: 50%;
   width: 30px;
 }
+.summary .summary-table {
+  border-collapse: collapse;
+}
+.summary .summary-table td,
+.summary .summary-table th {
+  border: 1px solid #000;
+}
