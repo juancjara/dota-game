@@ -31,7 +31,7 @@ Summary::generate = () ->
   while i < len
     item = this.result[i]
     
-    if item.effect == 'invulnerable'
+    if item.effect == 'invulnerable' and this.invulnerable == 0
       this.invulnerable += item.toggle
       this.challengeLog.setStatus(item.index, true)
     else

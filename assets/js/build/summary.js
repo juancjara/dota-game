@@ -34,7 +34,7 @@ Summary.prototype.generate = function() {
   len = this.result.length;
   while (i < len) {
     item = this.result[i];
-    if (item.effect === 'invulnerable') {
+    if (item.effect === 'invulnerable' && this.invulnerable === 0) {
       this.invulnerable += item.toggle;
       this.challengeLog.setStatus(item.index, true);
     } else {

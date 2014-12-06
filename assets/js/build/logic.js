@@ -610,16 +610,18 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
 
 SummaryView = React.createClass({displayName: 'SummaryView',
   format3Decimals: function(num) {
-    return Math.round(num * 1000) / 1000;
+    return num/ 1000;
   },
   render: function() {
     var self = this;
     var actions = this.props.summary.listSkills.map(function (action) {
-      console.log(action.status);
       var className ='same-line zoom-challenge '+ action.srcImg;
+      console.log('castTime', action.castTime);
       var castTime = self.format3Decimals(action.castTime);
+      console.log(castTime);
       var hitTime = self.format3Decimals(action.hitTime);
       var duration = self.format3Decimals(action.duration);
+      var statusClass ='fa fa-' + (action.status ? 'check': 'close')
       return( 
         React.DOM.tr(null, 
           React.DOM.td(null, 
@@ -630,14 +632,15 @@ SummaryView = React.createClass({displayName: 'SummaryView',
           React.DOM.td(null, hitTime), 
           React.DOM.td(null, duration), 
           React.DOM.td(null, 
-            React.DOM.input({type: "checkbox", checked: action.status})
+            React.DOM.i({className: statusClass}
+            )
           )
         )
       );
     });
     return (
       React.DOM.div({className: "summary"}, 
-        "Summary",  
+        React.DOM.h3(null, "Summary"), 
         React.DOM.table({className: "summary-table"}, 
           React.DOM.thead(null, 
             React.DOM.tr(null, 

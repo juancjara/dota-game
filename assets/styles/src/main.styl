@@ -112,6 +112,10 @@ widthMessage = 300
 
   .challenge-block
     .field
+      -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+      -moz-user-select: none; /* mozilla browsers */
+      -khtml-user-select: none; /* webkit (konqueror) browsers */
+      -ms-user-select: none; /* IE10+ */
       background: black
       height: 200px
       position: relative
@@ -144,9 +148,17 @@ widthMessage = 300
 
 //summary
 .summary
-  
+  font-size: 1.2em
+  margin: 5px 0
+  text-align: center
   .summary-table
     border-collapse: collapse
+    margin: 0 auto
+    text-align: center
     td
     th
       border: 1px solid black
+    .fa-check
+      color: green
+    .fa-close
+      color:red
