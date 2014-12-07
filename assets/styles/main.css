@@ -108,6 +108,10 @@
   width: 1.2em;
 }
 .main-block .challenge-block .field {
+  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+  -moz-user-select: none; /* mozilla browsers */
+  -khtml-user-select: none; /* webkit (konqueror) browsers */
+  -ms-user-select: none; /* IE10+ */
   background: #000;
   height: 200px;
   position: relative;
@@ -141,10 +145,23 @@
   top: 50%;
   width: 30px;
 }
+.summary {
+  font-size: 1.2em;
+  margin: 5px 0;
+  text-align: center;
+}
 .summary .summary-table {
   border-collapse: collapse;
+  margin: 0 auto;
+  text-align: center;
 }
 .summary .summary-table td,
 .summary .summary-table th {
   border: 1px solid #000;
+}
+.summary .summary-table .fa-check {
+  color: #008000;
+}
+.summary .summary-table .fa-close {
+  color: #f00;
 }

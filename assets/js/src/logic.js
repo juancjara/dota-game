@@ -422,7 +422,12 @@ var ChallengeTemplate = React.createClass({
       message: 'Choose challenge',
       startButton: 'Start',
       countDown: null,
-      urlChallenge: '<- Challenge your friend'
+      urlChallenge: '<- Challenge your friend',
+      wasChallenge: false,
+      friendData: {
+        msg: '',
+        time: ''
+      }
     };
   },
   componentDidMount: function() {
@@ -444,14 +449,20 @@ var ChallengeTemplate = React.createClass({
     }
     var data = res.data;
     var steps = data.list;
-    var msg = "";
-    this.setChallenge(steps);
+    var friendData = this.state.friendData;
+    friendData.time = data.time;
+    this.setState({
+      friendData: friendData
+    });
+    this.setChallenge(steps, true);
   },
-  setChallenge: function(steps) {
+  setChallenge: function(steps, wasChallenge) {
+    wasChallenge = wasChallenge || false;
     this.stop();
     this.setState({
       challenge: this.state.challenge.set(steps),
-      startButton: 'Start'
+      startButton: 'Start',
+      wasChallenge: wasChallenge
     });    
   },
   action: function(skill) {
@@ -562,6 +573,7 @@ var ChallengeTemplate = React.createClass({
     if (this.state.message.length == 0 ){
       classMessage = ' hide'
     }
+    var showFriendData= this.state.wasChallenge? '': 'hide';
     return (
       <div className='challenge-block'>
         <button 
@@ -581,6 +593,10 @@ var ChallengeTemplate = React.createClass({
           className={show}>
           <div>
             Tiempo {this.state.challenge.challengeLog.time} segundos
+          </div>
+          <div className={showFriendData}>
+            Your motherfucker friend finished this stupid challenge
+             in {this.state.friendData.time} seconds
           </div>
           <button 
             onClick={this.generateUrl}>
@@ -610,16 +626,18 @@ var ChallengeTemplate = React.createClass({
 
 SummaryView = React.createClass({
   format3Decimals: function(num) {
-    return Math.round(num * 1000) / 1000;
+    return num/ 1000;
   },
   render: function() {
     var self = this;
     var actions = this.props.summary.listSkills.map(function (action) {
-      console.log(action.status);
       var className ='same-line zoom-challenge '+ action.srcImg;
+      console.log('castTime', action.castTime);
       var castTime = self.format3Decimals(action.castTime);
+      console.log(castTime);
       var hitTime = self.format3Decimals(action.hitTime);
       var duration = self.format3Decimals(action.duration);
+      var statusClass ='fa fa-' + (action.status ? 'check': 'close')
       return( 
         <tr>
           <td>
@@ -630,14 +648,15 @@ SummaryView = React.createClass({
           <td>{hitTime}</td>
           <td>{duration}</td>
           <td>
-            <input type="checkbox" checked={action.status} />
+            <i className={statusClass}>
+            </i>
           </td>
         </tr>
       );
     });
     return (
       <div className='summary'>
-        Summary 
+        <h3>Summary</h3>
         <table className='summary-table'>
           <thead>
             <tr>

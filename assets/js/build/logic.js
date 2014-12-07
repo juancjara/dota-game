@@ -422,7 +422,12 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
       message: 'Choose challenge',
       startButton: 'Start',
       countDown: null,
-      urlChallenge: '<- Challenge your friend'
+      urlChallenge: '<- Challenge your friend',
+      wasChallenge: false,
+      friendData: {
+        msg: '',
+        time: ''
+      }
     };
   },
   componentDidMount: function() {
@@ -444,14 +449,20 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     }
     var data = res.data;
     var steps = data.list;
-    var msg = "";
-    this.setChallenge(steps);
+    var friendData = this.state.friendData;
+    friendData.time = data.time;
+    this.setState({
+      friendData: friendData
+    });
+    this.setChallenge(steps, true);
   },
-  setChallenge: function(steps) {
+  setChallenge: function(steps, wasChallenge) {
+    wasChallenge = wasChallenge || false;
     this.stop();
     this.setState({
       challenge: this.state.challenge.set(steps),
-      startButton: 'Start'
+      startButton: 'Start',
+      wasChallenge: wasChallenge
     });    
   },
   action: function(skill) {
@@ -562,6 +573,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     if (this.state.message.length == 0 ){
       classMessage = ' hide'
     }
+    var showFriendData= this.state.wasChallenge? '': 'hide';
     return (
       React.DOM.div({className: "challenge-block"}, 
         React.DOM.button({
@@ -581,6 +593,10 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
           className: show}, 
           React.DOM.div(null, 
             "Tiempo ", this.state.challenge.challengeLog.time, " segundos"
+          ), 
+          React.DOM.div({className: showFriendData}, 
+            "Your motherfucker friend finished this stupid challenge" + ' ' +
+             "in ", this.state.friendData.time, " seconds"
           ), 
           React.DOM.button({
             onClick: this.generateUrl}, 
@@ -610,16 +626,18 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
 
 SummaryView = React.createClass({displayName: 'SummaryView',
   format3Decimals: function(num) {
-    return Math.round(num * 1000) / 1000;
+    return num/ 1000;
   },
   render: function() {
     var self = this;
     var actions = this.props.summary.listSkills.map(function (action) {
-      console.log(action.status);
       var className ='same-line zoom-challenge '+ action.srcImg;
+      console.log('castTime', action.castTime);
       var castTime = self.format3Decimals(action.castTime);
+      console.log(castTime);
       var hitTime = self.format3Decimals(action.hitTime);
       var duration = self.format3Decimals(action.duration);
+      var statusClass ='fa fa-' + (action.status ? 'check': 'close')
       return( 
         React.DOM.tr(null, 
           React.DOM.td(null, 
@@ -630,14 +648,15 @@ SummaryView = React.createClass({displayName: 'SummaryView',
           React.DOM.td(null, hitTime), 
           React.DOM.td(null, duration), 
           React.DOM.td(null, 
-            React.DOM.input({type: "checkbox", checked: action.status})
+            React.DOM.i({className: statusClass}
+            )
           )
         )
       );
     });
     return (
       React.DOM.div({className: "summary"}, 
-        "Summary",  
+        React.DOM.h3(null, "Summary"), 
         React.DOM.table({className: "summary-table"}, 
           React.DOM.thead(null, 
             React.DOM.tr(null, 
