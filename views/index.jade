@@ -1,28 +1,37 @@
+- var production = 'pro' == process.env.NODE_ENV 
+
 html(lang='eng')
   head
     title dota practice
     link(rel="stylesheet", href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css")
-    link(rel='stylesheet', href='assets/styles/main.css')
-    link(rel='stylesheet', href='assets/styles/sprite.css')
-    link(rel='stylesheet', href='assets/styles/hero.css')
-    link(rel='stylesheet', href='assets/styles/items.css')
+    if production
+      link(rel='stylesheet', href='/assets/styles/style.min.css')
+    else        
+      link(rel='stylesheet', href='assets/styles/main.css')
+      link(rel='stylesheet', href='assets/styles/sprite.css')
+      link(rel='stylesheet', href='assets/styles/hero.css')
+      link(rel='stylesheet', href='assets/styles/items.css')
   body
     div(class='hide', id='challenge') #{id}
     #main
-    //<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    script(type='text/javascript', src='/assets/js/vendor/jquery-2.0.0.min.js')
-    script(type='text/javascript', src='/assets/js/api.js')
-    script(type='text/javascript', src='/assets/js/vendor/react.min.js')
-    script(type='text/javascript', src='/assets/js/key.js')
-    script(type='text/javascript', src='assets/js/dispatcher.js')
-    script(type='text/javascript', src='assets/js/build/summary.js')
-    script(type='text/javascript', src='assets/js/build/CountDown.js')
-    script(type='text/javascript', src='assets/js/build/challengeLog.js')
-    script(type='text/javascript', src='assets/js/build/timer.js')
-    script(type='text/javascript', src='assets/js/build/hero.js')
-    script(type='text/javascript', src='assets/js/build/itemsSlots.js')
-    script(type='text/javascript', src='assets/js/build/challenge.js')
-    script(type='text/javascript', src='assets/js/build/HeroManager.js')
-    script(type='text/javascript', src='assets/js/build/itemManager.js')
-    script(type='text/javascript', src='assets/js/build/logic.js')
-    script(type='text/javascript', src='assets/js/main.js')
+
+    if production
+      script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
+      script(type="text/javascript", src="/assets/js/min/all.min.js")  
+    else
+      script(type='text/javascript', src='/assets/js/vendor/jquery-2.0.0.min.js')
+      script(type='text/javascript', src='/assets/js/api.js')
+      script(type='text/javascript', src='/assets/js/vendor/react.min.js')
+      script(type='text/javascript', src='/assets/js/key.js')
+      script(type='text/javascript', src='assets/js/dispatcher.js')
+      script(type='text/javascript', src='assets/js/build/summary.js')
+      script(type='text/javascript', src='assets/js/build/CountDown.js')
+      script(type='text/javascript', src='assets/js/build/challengeLog.js')
+      script(type='text/javascript', src='assets/js/build/timer.js')
+      script(type='text/javascript', src='assets/js/build/hero.js')
+      script(type='text/javascript', src='assets/js/build/itemsSlots.js')
+      script(type='text/javascript', src='assets/js/build/challenge.js')
+      script(type='text/javascript', src='assets/js/build/HeroManager.js')
+      script(type='text/javascript', src='assets/js/build/itemManager.js')
+      script(type='text/javascript', src='assets/js/build/logic.js')
+      script(type='text/javascript', src='assets/js/main.js')
