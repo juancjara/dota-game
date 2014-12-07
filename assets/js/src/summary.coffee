@@ -14,12 +14,12 @@ Summary = (data) ->
 Summary::clean = () ->
   this.totalDmg = 0
   this.time = 0
+  this.events = []
   this.invulnerable = {
     value: 0,
     index: null
   }
   this.result = []
-  this.events = []
   return this
 
 Summary::add = (item) ->
@@ -41,6 +41,7 @@ Summary::generate = () ->
       canBeUse = false
       isSameAction = item.index == this.invulnerable.index
       valInvulnerable = this.invulnerable.value;
+
       if valInvulnerable == 0 or (valInvulnerable > 0 and isSameAction)
         canBeUse = true
         this.invulnerable.value += item.toggle

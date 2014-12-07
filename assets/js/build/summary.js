@@ -16,12 +16,12 @@ Summary = function(data) {
 Summary.prototype.clean = function() {
   this.totalDmg = 0;
   this.time = 0;
+  this.events = [];
   this.invulnerable = {
     value: 0,
     index: null
   };
   this.result = [];
-  this.events = [];
   return this;
 };
 

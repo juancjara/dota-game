@@ -422,7 +422,12 @@ var ChallengeTemplate = React.createClass({
       message: 'Choose challenge',
       startButton: 'Start',
       countDown: null,
-      urlChallenge: '<- Challenge your friend'
+      urlChallenge: '<- Challenge your friend',
+      wasChallenge: false,
+      friendData: {
+        msg: '',
+        time: ''
+      }
     };
   },
   componentDidMount: function() {
@@ -444,14 +449,20 @@ var ChallengeTemplate = React.createClass({
     }
     var data = res.data;
     var steps = data.list;
-    var msg = "";
-    this.setChallenge(steps);
+    var friendData = this.state.friendData;
+    friendData.time = data.time;
+    this.setState({
+      friendData: friendData
+    });
+    this.setChallenge(steps, true);
   },
-  setChallenge: function(steps) {
+  setChallenge: function(steps, wasChallenge) {
+    wasChallenge = wasChallenge || false;
     this.stop();
     this.setState({
       challenge: this.state.challenge.set(steps),
-      startButton: 'Start'
+      startButton: 'Start',
+      wasChallenge: wasChallenge
     });    
   },
   action: function(skill) {
@@ -562,6 +573,7 @@ var ChallengeTemplate = React.createClass({
     if (this.state.message.length == 0 ){
       classMessage = ' hide'
     }
+    var showFriendData= this.state.wasChallenge? '': 'hide';
     return (
       <div className='challenge-block'>
         <button 
@@ -581,6 +593,10 @@ var ChallengeTemplate = React.createClass({
           className={show}>
           <div>
             Tiempo {this.state.challenge.challengeLog.time} segundos
+          </div>
+          <div className={showFriendData}>
+            Your motherfucker friend finished this stupid challenge
+             in {this.state.friendData.time} seconds
           </div>
           <button 
             onClick={this.generateUrl}>

@@ -19,6 +19,7 @@ ChallengeLog.prototype.clean = function() {
   this.finishTime = 0.0;
   this.time = 0.0;
   this.listSkills = [];
+  this.summary.clean;
   return this;
 };
 
