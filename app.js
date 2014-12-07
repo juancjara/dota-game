@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 
 var env = process.env.NODE_ENV || 'dev';
-var port = (env == 'pro') ? 7777: 7771;
+var port = (env == 'pro') ? 7771: 7777;
 app.listen(port);
 
 app.get('/', rMain.index);
