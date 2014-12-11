@@ -24,10 +24,6 @@ widthMessage = 300
   height: 64px;
   width: 85px;
 
-.zoom-challenge
-  zoom: 0.6
-  -moz-transform: scale(0.6)
-
 .no-used
   opacity: 0.6
   
@@ -52,14 +48,24 @@ widthMessage = 300
 .pull-left
   float: left
 
+.zoom-challenge
+  zoom: .6
+  -moz-transform: scale(.6)
+
 .select-challenge
   margin-left: 2px
   width: 300px
+  .preview-challenge
+    margin-bottom: 1em
+  .no-item-challenge
+    width: 90px
+    height: 90px
+    border: 1px dashed black
+  .zoom-challenge
+    zoom: 0.4
+    -moz-transform: scale(0.4)
   .challenge-list
     list-style-type: decimal
-    .zoom-challenge
-      zoom: 0.4
-      -moz-transform: scale(0.4)
 .main-block
   margin: 0 auto
   

@@ -294,9 +294,9 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
       }
       else if (list[i].src == 'items') {
         items = this.props.itemsSelected.slots
-        for (var k = 0; k < skills.length; k++) {
-          if (name == skills[k].item.name) {
-            steps.push(skills[k].item);
+        for (var k = 0; k < items.length; k++) {
+          if (name == items[k].item.name) {
+            steps.push(items[k].item);
             break;
           }
         };
@@ -320,6 +320,7 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
     var itemsToChooseFrom = [];
     var skills;
     var items;
+    var showChallengeEmpty = 'clear-list ';
 
     skills = this.props.heroSelected.skills
     for (var i = 0; i < skills.length; i++) {
@@ -341,45 +342,38 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
         itemsToChooseFrom.push(items[i].item);
       }
     };
-
+    if (this.state.steps.length) {
+      showChallengeEmpty += 'hide';
+    }
 
     return (
       React.DOM.div({className: "select-challenge same-line-top"}, 
+        React.DOM.h2(null, " 1) Create you challenge"), 
         React.DOM.button({onClick: this.setChallenge}, "Set challenge"), 
         React.DOM.button({onClick: this.clearChallenge}, "Clear"), 
-        React.DOM.ul({className: "clear-list"}, 
-          this.state.steps.map(function(step ,i) {
-            var className ='same-line zoom-challenge '+ step.srcImg;
-            return (
-              React.DOM.li({
-                className: className, 
-                key: i}
-              )
-            )
-          }, this)
-        ), 
-        React.DOM.div(null, 
-          React.DOM.label(null, "Challenge list"), 
-          React.DOM.ul({className: "challenge-list"}, 
-            this.state.listChallenge.map(function(challenge ,i) {
+        React.DOM.div({className: "preview-challenge"}, 
+          React.DOM.h4(null, "Preview challenge"), 
+          React.DOM.ul({className: showChallengeEmpty}, 
+            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"})
+          ), 
+          React.DOM.ul({className: "clear-list"}, 
+            this.state.steps.map(function(step ,i) {
+              var className ='same-line zoom-challenge '+ step.srcImg;
               return (
-                React.DOM.li({onClick: this.selectListChallenge.bind(null, i)}, 
-                  challenge.map(function(step ,i) {
-                    var className ='same-line zoom-challenge '+ step.srcImg;
-                    return (
-                      React.DOM.span({
-                        className: className, 
-                        key: i}
-                      )
-                    )
-                  }, this)
+                React.DOM.li({
+                  className: className, 
+                  key: i}
                 )
               )
             }, this)
           )
         ), 
         React.DOM.label(null, "Custom skills to add to challenge"), 
-        React.DOM.ul({class: "custom-step"}, 
+        React.DOM.ul({className: "custom-step clear-list"}, 
           skillsToChooseFrom.map(function(step ,i) {
             return (
               StepToChooseFrom({
@@ -404,6 +398,26 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
                 addStep: this.addStep})
             )
           }, this)
+        ), 
+        React.DOM.div(null, 
+          React.DOM.label(null, "Challenge list"), 
+          React.DOM.ul({className: "challenge-list"}, 
+            this.state.listChallenge.map(function(challenge ,i) {
+              return (
+                React.DOM.li({onClick: this.selectListChallenge.bind(null, i)}, 
+                  challenge.map(function(step ,i) {
+                    var className ='same-line zoom-challenge '+ step.srcImg;
+                    return (
+                      React.DOM.span({
+                        className: className, 
+                        key: i}
+                      )
+                    )
+                  }, this)
+                )
+              )
+            }, this)
+          )
         )
       )
     );
@@ -576,6 +590,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     var showFriendData= this.state.wasChallenge? '': 'hide';
     return (
       React.DOM.div({className: "challenge-block"}, 
+        React.DOM.h2(null, " 2) Start your challenge  "), 
         React.DOM.button({
           onClick: this.start}, 
           this.state.startButton
@@ -632,9 +647,7 @@ SummaryView = React.createClass({displayName: 'SummaryView',
     var self = this;
     var actions = this.props.summary.listSkills.map(function (action) {
       var className ='same-line zoom-challenge '+ action.srcImg;
-      console.log('castTime', action.castTime);
       var castTime = self.format3Decimals(action.castTime);
-      console.log(castTime);
       var hitTime = self.format3Decimals(action.hitTime);
       var duration = self.format3Decimals(action.duration);
       var statusClass ='fa fa-' + (action.status ? 'check': 'close')
@@ -756,6 +769,9 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     return (
       React.DOM.div({main: true}, 
         React.DOM.h1({className: "game-title"}, "DOTA PRACTICE"), 
+        SelectChallenge({
+          heroSelected: this.state.data, 
+          itemsSelected: this.state.itemsSlots}), 
         React.DOM.div({className: "main-block same-line"}, 
           ChallengeTemplate({
             updateHero: this.updateHero, 
@@ -770,10 +786,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
           React.DOM.div({className: "topics"}, 
             "Some skills require a click on an enemy(red circle) to be use."
           )
-        ), 
-        SelectChallenge({
-          heroSelected: this.state.data, 
-          itemsSelected: this.state.itemsSlots})
+        )
       )
     );
   }

@@ -13,7 +13,7 @@ var coffeeDir = './assets/js/src/*.coffee';
 
 gulp.task('css', function () {
   gulp.src(stylusDir)
-      .pipe(stylus({compress: true}))
+      .pipe(stylus({compress: false}))
       .pipe(gulp.dest('./assets/styles'));
 });
 /*
@@ -53,7 +53,10 @@ gulp.task('compressJS', function() {
 
 gulp.task('minify-css', function() {
   gulp.src([
-      './assets/styles/*.css',
+      './assets/styles/hero.css',
+      './assets/styles/items.css',
+      './assets/styles/sprite.css',
+      './assets/styles/main.css'
     ])
     .pipe(minifyCSS())
     .pipe(concat('style.min.css'))

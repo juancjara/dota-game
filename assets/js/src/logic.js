@@ -294,9 +294,9 @@ var SelectChallenge = React.createClass({
       }
       else if (list[i].src == 'items') {
         items = this.props.itemsSelected.slots
-        for (var k = 0; k < skills.length; k++) {
-          if (name == skills[k].item.name) {
-            steps.push(skills[k].item);
+        for (var k = 0; k < items.length; k++) {
+          if (name == items[k].item.name) {
+            steps.push(items[k].item);
             break;
           }
         };
@@ -320,6 +320,7 @@ var SelectChallenge = React.createClass({
     var itemsToChooseFrom = [];
     var skills;
     var items;
+    var showChallengeEmpty = 'clear-list ';
 
     skills = this.props.heroSelected.skills
     for (var i = 0; i < skills.length; i++) {
@@ -341,45 +342,38 @@ var SelectChallenge = React.createClass({
         itemsToChooseFrom.push(items[i].item);
       }
     };
-
+    if (this.state.steps.length) {
+      showChallengeEmpty += 'hide';
+    }
 
     return (
       <div className='select-challenge same-line-top'>
+        <h2> 1) Create you challenge</h2>
         <button onClick={this.setChallenge}>Set challenge</button>
         <button onClick={this.clearChallenge}>Clear</button>
-        <ul className='clear-list'>
-          {this.state.steps.map(function(step ,i) {
-            var className ='same-line zoom-challenge '+ step.srcImg;
-            return (
-              <li
-                className= {className}
-                key= {i}>
-              </li>
-            )
-          }, this)}
-        </ul>
-        <div>
-          <label>Challenge list</label>
-          <ul className='challenge-list'>
-            {this.state.listChallenge.map(function(challenge ,i) {
+        <div className='preview-challenge'>
+          <h4>Preview challenge</h4>
+          <ul className={showChallengeEmpty}>
+            <li className='same-line zoom-challenge no-item-challenge'></li>
+            <li className='same-line zoom-challenge no-item-challenge'></li>
+            <li className='same-line zoom-challenge no-item-challenge'></li>
+            <li className='same-line zoom-challenge no-item-challenge'></li>
+            <li className='same-line zoom-challenge no-item-challenge'></li>
+          </ul>
+          <ul className='clear-list'>
+            {this.state.steps.map(function(step ,i) {
+              var className ='same-line zoom-challenge '+ step.srcImg;
               return (
-                <li onClick={this.selectListChallenge.bind(null, i)}>
-                  {challenge.map(function(step ,i) {
-                    var className ='same-line zoom-challenge '+ step.srcImg;
-                    return (
-                      <span
-                        className= {className}
-                        key= {i}>
-                      </span>
-                    )
-                  }, this)}
+                <li
+                  className= {className}
+                  key= {i}>
                 </li>
               )
             }, this)}
           </ul>
         </div>
         <label>Custom skills to add to challenge</label>
-        <ul class='custom-step'>
+        <ul className='custom-step clear-list'>
           {skillsToChooseFrom.map(function(step ,i) {
             return (
               <StepToChooseFrom
@@ -405,6 +399,26 @@ var SelectChallenge = React.createClass({
             )
           }, this)}
         </ul>
+        <div>
+          <label>Challenge list</label>
+          <ul className='challenge-list'>
+            {this.state.listChallenge.map(function(challenge ,i) {
+              return (
+                <li onClick={this.selectListChallenge.bind(null, i)}>
+                  {challenge.map(function(step ,i) {
+                    var className ='same-line zoom-challenge '+ step.srcImg;
+                    return (
+                      <span
+                        className= {className}
+                        key= {i}>
+                      </span>
+                    )
+                  }, this)}
+                </li>
+              )
+            }, this)}
+          </ul>
+        </div>
       </div>
     );
   }
@@ -576,6 +590,7 @@ var ChallengeTemplate = React.createClass({
     var showFriendData= this.state.wasChallenge? '': 'hide';
     return (
       <div className='challenge-block'>
+        <h2> 2) Start your challenge  </h2>
         <button 
           onClick={this.start}>
           {this.state.startButton}
@@ -632,9 +647,7 @@ SummaryView = React.createClass({
     var self = this;
     var actions = this.props.summary.listSkills.map(function (action) {
       var className ='same-line zoom-challenge '+ action.srcImg;
-      console.log('castTime', action.castTime);
       var castTime = self.format3Decimals(action.castTime);
-      console.log(castTime);
       var hitTime = self.format3Decimals(action.hitTime);
       var duration = self.format3Decimals(action.duration);
       var statusClass ='fa fa-' + (action.status ? 'check': 'close')
@@ -756,6 +769,9 @@ var BaseTemplate = React.createClass({
     return (
       <div main>
         <h1 className='game-title'>DOTA PRACTICE</h1>
+        <SelectChallenge
+          heroSelected={this.state.data}
+          itemsSelected={this.state.itemsSlots} />
         <div className='main-block same-line'>
           <ChallengeTemplate 
             updateHero={this.updateHero}
@@ -771,9 +787,6 @@ var BaseTemplate = React.createClass({
             Some skills require a click on an enemy(red circle) to be use.
           </div>
         </div>
-        <SelectChallenge
-          heroSelected={this.state.data}
-          itemsSelected={this.state.itemsSlots} />
       </div>
     );
   }
