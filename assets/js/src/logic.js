@@ -610,8 +610,9 @@ var ChallengeTemplate = React.createClass({
             Tiempo {this.state.challenge.challengeLog.time} segundos
           </div>
           <div className={showFriendData}>
-            Your motherfucker friend finished this stupid challenge
-             in {this.state.friendData.time} seconds
+            Your friend finished this 
+            <span className='cross-out'> stupid </span>
+             challenge in {this.state.friendData.time} seconds
           </div>
           <button 
             onClick={this.generateUrl}>
