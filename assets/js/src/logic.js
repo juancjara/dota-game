@@ -607,7 +607,7 @@ var ChallengeTemplate = React.createClass({
         <div 
           className={show}>
           <div>
-            Tiempo {this.state.challenge.challengeLog.time} segundos
+            Time {this.state.challenge.challengeLog.time} seconds
           </div>
           <div className={showFriendData}>
             Your friend finished this 
