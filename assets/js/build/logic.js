@@ -354,74 +354,84 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
           className: "tab-title text-center"}, 
           "Create your own challenge or use defaults"
         ), 
-        React.DOM.button({onClick: this.setChallenge}, "Set challenge"), 
-        React.DOM.button({onClick: this.clearChallenge}, "Clear"), 
-        React.DOM.div({className: "preview-challenge"}, 
-          React.DOM.h4(null, "Preview challenge"), 
-          React.DOM.ul({className: showChallengeEmpty}, 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"})
+        React.DOM.section({className: "center-block"}, 
+          React.DOM.label(null, "Custom skills to add to challenge"), 
+          React.DOM.ul({className: "custom-step clear-list"}, 
+            skillsToChooseFrom.map(function(step ,i) {
+              return (
+                StepToChooseFrom({
+                  key: i, 
+                  item: step, 
+                  addStep: this.addStep})
+              )
+            }, this), 
+            extraSkillsToChooseFrom.map(function(step ,i) {
+              return (
+                StepToChooseFrom({
+                  key: i, 
+                  item: step, 
+                  addStep: this.addStep})
+              )
+            }, this), 
+            itemsToChooseFrom.map(function(step ,i) {
+              return (
+                StepToChooseFrom({
+                  key: i, 
+                  item: step, 
+                  addStep: this.addStep})
+              )
+            }, this)
           ), 
-          React.DOM.ul({className: "clear-list"}, 
-            this.state.steps.map(function(step ,i) {
-              var className ='same-line zoom-challenge '+ step.srcImg;
-              return (
-                React.DOM.li({
-                  className: className, 
-                  key: i}
-                )
-              )
-            }, this)
-          )
-        ), 
-        React.DOM.label(null, "Custom skills to add to challenge"), 
-        React.DOM.ul({className: "custom-step clear-list"}, 
-          skillsToChooseFrom.map(function(step ,i) {
-            return (
-              StepToChooseFrom({
-                key: i, 
-                item: step, 
-                addStep: this.addStep})
-            )
-          }, this), 
-          extraSkillsToChooseFrom.map(function(step ,i) {
-            return (
-              StepToChooseFrom({
-                key: i, 
-                item: step, 
-                addStep: this.addStep})
-            )
-          }, this), 
-          itemsToChooseFrom.map(function(step ,i) {
-            return (
-              StepToChooseFrom({
-                key: i, 
-                item: step, 
-                addStep: this.addStep})
-            )
-          }, this)
-        ), 
-        React.DOM.div(null, 
-          React.DOM.label(null, "Challenge list"), 
-          React.DOM.ul({className: "challenge-list"}, 
-            this.state.listChallenge.map(function(challenge ,i) {
-              return (
-                React.DOM.li({onClick: this.selectListChallenge.bind(null, i)}, 
-                  challenge.map(function(step ,i) {
-                    var className ='same-line zoom-challenge '+ step.srcImg;
-                    return (
-                      React.DOM.span({
-                        className: className, 
-                        key: i}
+          React.DOM.div({className: "top-10"}, 
+            React.DOM.label(null, "Default challenges"), 
+            React.DOM.ul({className: "challenge-list"}, 
+              this.state.listChallenge.map(function(challenge ,i) {
+                return (
+                  React.DOM.li({onClick: this.selectListChallenge.bind(null, i)}, 
+                    challenge.map(function(step ,i) {
+                      var className ='same-line zoom-challenge '+ step.srcImg;
+                      return (
+                        React.DOM.span({
+                          className: className, 
+                          key: i}
+                        )
                       )
-                    )
-                  }, this)
+                    }, this)
+                  )
                 )
-              )
-            }, this)
+              }, this)
+            )
+          ), 
+          React.DOM.div({className: "preview-challenge"}, 
+            React.DOM.h4(null, "Preview challenge"), 
+            React.DOM.ul({className: showChallengeEmpty}, 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"})
+            ), 
+            React.DOM.ul({className: "clear-list"}, 
+              this.state.steps.map(function(step ,i) {
+                var className ='same-line zoom-challenge '+ step.srcImg;
+                return (
+                  React.DOM.li({
+                    className: className, 
+                    key: i}
+                  )
+                )
+              }, this)
+            ), 
+            React.DOM.button({
+              onClick: this.clearChallenge, 
+              className: "button btn-default"}, 
+              "Clear"
+            ), 
+            React.DOM.button({
+              onClick: this.setChallenge, 
+              className: "button btn-default"}, 
+              "Set challenge"
+            )
           )
         )
       )
@@ -476,6 +486,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     this.setChallenge(steps, true);
   },
   setChallenge: function(steps, wasChallenge) {
+    this.props.changeTabGame();
     wasChallenge = wasChallenge || false;
     this.stop();
     this.setState({
@@ -600,6 +611,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
           "Start your challenge"
         ), 
         React.DOM.button({
+          className: "button btn-default", 
           onClick: this.start}, 
           this.state.startButton
         ), 
@@ -623,6 +635,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
              "challenge in ", this.state.friendData.time, " seconds"
           ), 
           React.DOM.button({
+            className: "button btn-default", 
             onClick: this.generateUrl}, 
             "Generate Url"  
           ), 
@@ -855,6 +868,9 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
       });
     }
   },
+  changeTabGame: function() {
+    this.changeTab(4);
+  },
   changeTab: function(index) {
     if (index == -1) {
       return;
@@ -879,7 +895,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   render: function() {
     var self = this;
     var tabs = this.state.tabs.map(function(item, i) {
-      var itemClass = 'tab-item ' + (item.active ? 'selected': '');
+      var itemClass = 'tab-item button ' + (item.active ? 'selected': '');
       return (
         React.DOM.li({
           className: "same-line-top"}, 
@@ -911,6 +927,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
           id: "tab-game", 
           className: "main-block same-line tab-content"}, 
           ChallengeTemplate({
+            changeTabGame: this.changeTabGame, 
             updateHero: this.updateHero, 
             heroSelected: this.state.data, 
             itemsSelected: this.state.itemsSlots}), 

@@ -354,76 +354,86 @@ var SelectChallenge = React.createClass({
           className='tab-title text-center'>
           Create your own challenge or use defaults
         </h2>
-        <button onClick={this.setChallenge}>Set challenge</button>
-        <button onClick={this.clearChallenge}>Clear</button>
-        <div className='preview-challenge'>
-          <h4>Preview challenge</h4>
-          <ul className={showChallengeEmpty}>
-            <li className='same-line zoom-challenge no-item-challenge'></li>
-            <li className='same-line zoom-challenge no-item-challenge'></li>
-            <li className='same-line zoom-challenge no-item-challenge'></li>
-            <li className='same-line zoom-challenge no-item-challenge'></li>
-            <li className='same-line zoom-challenge no-item-challenge'></li>
-          </ul>
-          <ul className='clear-list'>
-            {this.state.steps.map(function(step ,i) {
-              var className ='same-line zoom-challenge '+ step.srcImg;
+        <section className='center-block'>
+          <label>Custom skills to add to challenge</label>
+          <ul className='custom-step clear-list'>
+            {skillsToChooseFrom.map(function(step ,i) {
               return (
-                <li
-                  className= {className}
-                  key= {i}>
-                </li>
+                <StepToChooseFrom
+                  key= {i}
+                  item={step}
+                  addStep={this.addStep} />
+              )
+            }, this)}
+            {extraSkillsToChooseFrom.map(function(step ,i) {
+              return (
+                <StepToChooseFrom
+                  key= {i}
+                  item={step}
+                  addStep={this.addStep} />
+              )
+            }, this)}
+            {itemsToChooseFrom.map(function(step ,i) {
+              return (
+                <StepToChooseFrom
+                  key= {i}
+                  item={step}
+                  addStep={this.addStep} />
               )
             }, this)}
           </ul>
-        </div>
-        <label>Custom skills to add to challenge</label>
-        <ul className='custom-step clear-list'>
-          {skillsToChooseFrom.map(function(step ,i) {
-            return (
-              <StepToChooseFrom
-                key= {i}
-                item={step}
-                addStep={this.addStep} />
-            )
-          }, this)}
-          {extraSkillsToChooseFrom.map(function(step ,i) {
-            return (
-              <StepToChooseFrom
-                key= {i}
-                item={step}
-                addStep={this.addStep} />
-            )
-          }, this)}
-          {itemsToChooseFrom.map(function(step ,i) {
-            return (
-              <StepToChooseFrom
-                key= {i}
-                item={step}
-                addStep={this.addStep} />
-            )
-          }, this)}
-        </ul>
-        <div>
-          <label>Challenge list</label>
-          <ul className='challenge-list'>
-            {this.state.listChallenge.map(function(challenge ,i) {
-              return (
-                <li onClick={this.selectListChallenge.bind(null, i)}>
-                  {challenge.map(function(step ,i) {
-                    var className ='same-line zoom-challenge '+ step.srcImg;
-                    return (
-                      <span
-                        className= {className}
-                        key= {i}>
-                      </span>
-                    )
-                  }, this)}
-                </li>
-              )
-            }, this)}
-          </ul>
-        </div>
+          <div className='top-10'>
+            <label>Default challenges</label>
+            <ul className='challenge-list'>
+              {this.state.listChallenge.map(function(challenge ,i) {
+                return (
+                  <li onClick={this.selectListChallenge.bind(null, i)}>
+                    {challenge.map(function(step ,i) {
+                      var className ='same-line zoom-challenge '+ step.srcImg;
+                      return (
+                        <span
+                          className= {className}
+                          key= {i}>
+                        </span>
+                      )
+                    }, this)}
+                  </li>
+                )
+              }, this)}
+            </ul>
+          </div>
+          <div className='preview-challenge'>
+            <h4>Preview challenge</h4>
+            <ul className={showChallengeEmpty}>
+              <li className='same-line zoom-challenge no-item-challenge'></li>
+              <li className='same-line zoom-challenge no-item-challenge'></li>
+              <li className='same-line zoom-challenge no-item-challenge'></li>
+              <li className='same-line zoom-challenge no-item-challenge'></li>
+              <li className='same-line zoom-challenge no-item-challenge'></li>
+            </ul>
+            <ul className='clear-list'>
+              {this.state.steps.map(function(step ,i) {
+                var className ='same-line zoom-challenge '+ step.srcImg;
+                return (
+                  <li
+                    className= {className}
+                    key= {i}>
+                  </li>
+                )
+              }, this)}
+            </ul>
+            <button 
+              onClick={this.clearChallenge}
+              className='button btn-default'>
+              Clear
+            </button>
+            <button 
+              onClick={this.setChallenge}
+              className='button btn-default'>
+              Set challenge
+            </button>
+          </div>
+        </section>
       </div>
     );
   }
@@ -476,6 +486,7 @@ var ChallengeTemplate = React.createClass({
     this.setChallenge(steps, true);
   },
   setChallenge: function(steps, wasChallenge) {
+    this.props.changeTabGame();
     wasChallenge = wasChallenge || false;
     this.stop();
     this.setState({
@@ -600,6 +611,7 @@ var ChallengeTemplate = React.createClass({
           Start your challenge
         </h2>
         <button 
+          className='button btn-default'
           onClick={this.start}>
           {this.state.startButton}
         </button>
@@ -623,6 +635,7 @@ var ChallengeTemplate = React.createClass({
              challenge in {this.state.friendData.time} seconds
           </div>
           <button 
+            className='button btn-default'
             onClick={this.generateUrl}>
             Generate Url  
           </button>
@@ -855,6 +868,9 @@ var BaseTemplate = React.createClass({
       });
     }
   },
+  changeTabGame: function() {
+    this.changeTab(4);
+  },
   changeTab: function(index) {
     if (index == -1) {
       return;
@@ -879,7 +895,7 @@ var BaseTemplate = React.createClass({
   render: function() {
     var self = this;
     var tabs = this.state.tabs.map(function(item, i) {
-      var itemClass = 'tab-item ' + (item.active ? 'selected': '');
+      var itemClass = 'tab-item button ' + (item.active ? 'selected': '');
       return (
         <li 
           className='same-line-top'>
@@ -911,6 +927,7 @@ var BaseTemplate = React.createClass({
           id='tab-game'
           className='main-block same-line tab-content'>
           <ChallengeTemplate 
+            changeTabGame= {this.changeTabGame}
             updateHero={this.updateHero}
             heroSelected={this.state.data}
             itemsSelected={this.state.itemsSlots} />
