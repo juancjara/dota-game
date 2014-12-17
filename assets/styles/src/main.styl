@@ -1,5 +1,81 @@
+widthNav = 1200
 widthGame = 1000
 widthMessage = 300
+heightGame = 510
+
+@import url("http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900,300italic");
+
+body
+  background-color: #f7f7f7;
+  background-image: -moz-linear-gradient(top, rgba(0,0,0,0.05), rgba(0,0,0,0)), url('./../images/bg01.png');
+  background-image: -webkit-linear-gradient(top, rgba(0,0,0,0.05), rgba(0,0,0,0)), url('./../images/bg01.png');
+  background-image: -o-linear-gradient(top, rgba(0,0,0,0.05), rgba(0,0,0,0)), url('./../images/bg01.png');
+  background-image: -ms-linear-gradient(top, rgba(0,0,0,0.05), rgba(0,0,0,0)), url('./../images/bg01.png');
+  background-image: linear-gradient(top, rgba(0,0,0,0.05), rgba(0,0,0,0)), url('./../images/bg01.png');
+  background-position: top left,  top left;
+  background-repeat: repeat-x,  repeat;
+  background-size: 100% 30em, auto;
+
+//general
+body,input,textarea,select
+  font-family: 'Source Sans Pro'
+  font-weight: 300
+  color: #5d5d5d
+//
+
+h1, h2, h3, h4, h5, h6
+  color: #252122
+  font-weight: 700
+
+//tabs
+.tab-item
+  background: rgba(0,0,0,0.085)
+  border-radius: 6px
+  border: 0
+  color: #444
+  cursor: pointer
+  display: inline-block
+  font-size: 1.5em
+  font-weight: 800
+  margin: 1em 1em
+  outline: 0
+  padding: 0.8em 0.9em
+  position: relative
+  text-decoration: none
+  transition: background-color .25s ease-in-out
+  -webkit-transition: background-color .25s ease-in-out
+  -moz-transition: background-color .25s ease-in-out
+  -ms-transition: background-color .25s ease-in-out
+  -o-transition: background-color .25s ease-in-out
+  -webkit-appearance: none
+.selected
+  background: #0090c5
+  color: #fff
+.tab-content
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.015);
+  box-shadow: 0px 3px 0px 0px rgba(0,0,0,0.05);
+  display: none !important
+  height: heightGame
+  padding: 1em
+  width: widthGame
+  margin: 0 auto
+.tab-show
+  display: block !important
+//
+
+.tab-title
+  font-size: 2.25em
+  margin: 0 0 1.1em 0
+  line-height: 1em
+
+.soon
+  font-size: 5em
+  margin-top: 2em
+  
+.text-center
+  text-align: center
 
 .poll
   display: block
@@ -7,7 +83,7 @@ widthMessage = 300
 
 #main
   display: table
-  margin: 0 auto
+  margin: 0 auto 1.5em auto
 
 .cross-out
   text-decoration: line-through
@@ -19,7 +95,8 @@ widthMessage = 300
   visibility: hidden
 
 .game-title
-  text-align: center
+  font-size: 3.5em;
+  margin: 0.1em 0 0.35em 0;
 
 .no-skill 
   background: black
@@ -60,8 +137,7 @@ widthMessage = 300
   -moz-transform: scale(.6)
 
 .select-challenge
-  margin-left: 2px
-  width: 300px
+  
   .preview-challenge
     margin-bottom: 1em
   .no-item-challenge

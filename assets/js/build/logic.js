@@ -347,8 +347,13 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
     }
 
     return (
-      React.DOM.div({className: "select-challenge same-line-top"}, 
-        React.DOM.h2(null, " 1) Create you challenge"), 
+      React.DOM.div({
+        id: "tab-set-challenge", 
+        className: "select-challenge same-line-top tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Create your own challenge or use defaults"
+        ), 
         React.DOM.button({onClick: this.setChallenge}, "Set challenge"), 
         React.DOM.button({onClick: this.clearChallenge}, "Clear"), 
         React.DOM.div({className: "preview-challenge"}, 
@@ -590,7 +595,10 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     var showFriendData= this.state.wasChallenge? '': 'hide';
     return (
       React.DOM.div({className: "challenge-block"}, 
-        React.DOM.h2(null, " 2) Start your challenge  "), 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Start your challenge"
+        ), 
         React.DOM.button({
           onClick: this.start}, 
           this.state.startButton
@@ -690,18 +698,99 @@ SummaryView = React.createClass({displayName: 'SummaryView',
   }
 });
 
+var PickHeroView = React.createClass({displayName: 'PickHeroView',
+  render: function() {
+    return(
+      React.DOM.section({id: "tab-pick-hero", 
+        className: "tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Choose a hero"
+        ), 
+        React.DOM.div({
+          className: "soon text-center"}, 
+          "Coming soon"
+        )
+      )
+    );
+  }
+});
+
+var PickItemView = React.createClass({displayName: 'PickItemView',
+  render: function() {
+    return(
+      React.DOM.section({id: "tab-pick-item", 
+        className: "tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Choose your items"
+        ), 
+        React.DOM.div({
+          className: "soon text-center"}, 
+          "Coming soon"
+        )
+      )
+    );
+  }
+});
+
+var SettingsView = React.createClass({displayName: 'SettingsView',
+  render: function() {
+    return(
+      React.DOM.section({id: "tab-settings", 
+        className: "tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Set your custom keys and more"
+        ), 
+        React.DOM.div({
+          className: "soon text-center"}, 
+          "Coming soon"
+        )
+      )
+    );
+  }
+});
+
 var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   getInitialState: function() {
     dispatcher.subscribe('clearHero', this.clearHero);
+    var tabs = [
+      {
+        name: '1) Pick hero',
+        target: '#tab-pick-hero',
+        active: false
+      }, {
+        name: '2) Pick items',
+        target: '#tab-pick-item',
+        active: false
+      }, {
+        name: '3) Settings',
+        target: '#tab-settings',
+        active: false
+      }, {
+        name: '4) Set Challenge',
+        target: '#tab-set-challenge',
+        active: false
+      }, {
+        name: '5) Go game',
+        target: '#tab-game',
+        active: false
+      }
+    ];
+
     return {
       data: this.props.data,
-      itemsSlots: new ItemsSlots()
+      itemsSlots: new ItemsSlots(),
+      tabs: tabs,
+      activeTab: 3
     };
   },
   componentDidMount: function() {
     var heroSelected;
     heroSelected = heroMng.heros['invoker'];
     this.updateHero(heroSelected);
+    this.changeTab(this.state.activeTab);
   },
   createFun: function(obj) {
     return function(param) {
@@ -766,14 +855,61 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
       });
     }
   },
+  changeTab: function(index) {
+    if (index == -1) {
+      return;
+    }
+    var tabs = this.state.tabs;
+    var id;
+    var activeTab = this.state.activeTab;
+    if (activeTab > -1) {
+      id = tabs[activeTab].target;
+      tabs[activeTab].active = false;
+      $(id).removeClass('tab-show');
+    }
+    id = tabs[index].target;
+    $(id).addClass('tab-show');
+    tabs[index].active = true;
+
+    this.setState({
+      activeTab: index,
+      tabs: tabs
+    });
+  },
   render: function() {
+    var self = this;
+    var tabs = this.state.tabs.map(function(item, i) {
+      var itemClass = 'tab-item ' + (item.active ? 'selected': '');
+      return (
+        React.DOM.li({
+          className: "same-line-top"}, 
+          React.DOM.span({
+            className: itemClass, 
+            onClick: self.changeTab.bind(null, i)}, item.name
+          )
+        )
+      )
+    });
     return (
-      React.DOM.div({main: true}, 
-        React.DOM.h1({className: "game-title"}, "DOTA PRACTICE"), 
+      React.DOM.div(null, 
+        React.DOM.h1({className: "game-title text-center"}, "DOTA PRACTICE"), 
+        
+        React.DOM.section(null, 
+          React.DOM.ul({className: "clear-list text-center"}, 
+            tabs
+          )
+        ), 
+
+        PickHeroView(null), 
+        PickItemView(null), 
+        SettingsView(null), 
         SelectChallenge({
           heroSelected: this.state.data, 
           itemsSelected: this.state.itemsSlots}), 
-        React.DOM.div({className: "main-block same-line"}, 
+
+        React.DOM.div({
+          id: "tab-game", 
+          className: "main-block same-line tab-content"}, 
           ChallengeTemplate({
             updateHero: this.updateHero, 
             heroSelected: this.state.data, 
@@ -788,6 +924,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
             "Some skills require a click on an enemy(red circle) to be use."
           )
         )
+
       )
     );
   }
