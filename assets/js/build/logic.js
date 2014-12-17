@@ -347,76 +347,91 @@ var SelectChallenge = React.createClass({displayName: 'SelectChallenge',
     }
 
     return (
-      React.DOM.div({className: "select-challenge same-line-top"}, 
-        React.DOM.h2(null, " 1) Create you challenge"), 
-        React.DOM.button({onClick: this.setChallenge}, "Set challenge"), 
-        React.DOM.button({onClick: this.clearChallenge}, "Clear"), 
-        React.DOM.div({className: "preview-challenge"}, 
-          React.DOM.h4(null, "Preview challenge"), 
-          React.DOM.ul({className: showChallengeEmpty}, 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
-            React.DOM.li({className: "same-line zoom-challenge no-item-challenge"})
+      React.DOM.div({
+        id: "tab-set-challenge", 
+        className: "select-challenge same-line-top tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Create your own challenge or use defaults"
+        ), 
+        React.DOM.section({className: "center-block"}, 
+          React.DOM.label(null, "Custom skills to add to challenge"), 
+          React.DOM.ul({className: "custom-step clear-list"}, 
+            skillsToChooseFrom.map(function(step ,i) {
+              return (
+                StepToChooseFrom({
+                  key: i, 
+                  item: step, 
+                  addStep: this.addStep})
+              )
+            }, this), 
+            extraSkillsToChooseFrom.map(function(step ,i) {
+              return (
+                StepToChooseFrom({
+                  key: i, 
+                  item: step, 
+                  addStep: this.addStep})
+              )
+            }, this), 
+            itemsToChooseFrom.map(function(step ,i) {
+              return (
+                StepToChooseFrom({
+                  key: i, 
+                  item: step, 
+                  addStep: this.addStep})
+              )
+            }, this)
           ), 
-          React.DOM.ul({className: "clear-list"}, 
-            this.state.steps.map(function(step ,i) {
-              var className ='same-line zoom-challenge '+ step.srcImg;
-              return (
-                React.DOM.li({
-                  className: className, 
-                  key: i}
-                )
-              )
-            }, this)
-          )
-        ), 
-        React.DOM.label(null, "Custom skills to add to challenge"), 
-        React.DOM.ul({className: "custom-step clear-list"}, 
-          skillsToChooseFrom.map(function(step ,i) {
-            return (
-              StepToChooseFrom({
-                key: i, 
-                item: step, 
-                addStep: this.addStep})
-            )
-          }, this), 
-          extraSkillsToChooseFrom.map(function(step ,i) {
-            return (
-              StepToChooseFrom({
-                key: i, 
-                item: step, 
-                addStep: this.addStep})
-            )
-          }, this), 
-          itemsToChooseFrom.map(function(step ,i) {
-            return (
-              StepToChooseFrom({
-                key: i, 
-                item: step, 
-                addStep: this.addStep})
-            )
-          }, this)
-        ), 
-        React.DOM.div(null, 
-          React.DOM.label(null, "Challenge list"), 
-          React.DOM.ul({className: "challenge-list"}, 
-            this.state.listChallenge.map(function(challenge ,i) {
-              return (
-                React.DOM.li({onClick: this.selectListChallenge.bind(null, i)}, 
-                  challenge.map(function(step ,i) {
-                    var className ='same-line zoom-challenge '+ step.srcImg;
-                    return (
-                      React.DOM.span({
-                        className: className, 
-                        key: i}
+          React.DOM.div({className: "top-10"}, 
+            React.DOM.label(null, "Default challenges"), 
+            React.DOM.ul({className: "challenge-list"}, 
+              this.state.listChallenge.map(function(challenge ,i) {
+                return (
+                  React.DOM.li({onClick: this.selectListChallenge.bind(null, i)}, 
+                    challenge.map(function(step ,i) {
+                      var className ='same-line zoom-challenge '+ step.srcImg;
+                      return (
+                        React.DOM.span({
+                          className: className, 
+                          key: i}
+                        )
                       )
-                    )
-                  }, this)
+                    }, this)
+                  )
                 )
-              )
-            }, this)
+              }, this)
+            )
+          ), 
+          React.DOM.div({className: "preview-challenge"}, 
+            React.DOM.h4(null, "Preview challenge"), 
+            React.DOM.ul({className: showChallengeEmpty}, 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"}), 
+              React.DOM.li({className: "same-line zoom-challenge no-item-challenge"})
+            ), 
+            React.DOM.ul({className: "clear-list"}, 
+              this.state.steps.map(function(step ,i) {
+                var className ='same-line zoom-challenge '+ step.srcImg;
+                return (
+                  React.DOM.li({
+                    className: className, 
+                    key: i}
+                  )
+                )
+              }, this)
+            ), 
+            React.DOM.button({
+              onClick: this.clearChallenge, 
+              className: "button btn-default"}, 
+              "Clear"
+            ), 
+            React.DOM.button({
+              onClick: this.setChallenge, 
+              className: "button btn-default"}, 
+              "Set challenge"
+            )
           )
         )
       )
@@ -471,6 +486,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     this.setChallenge(steps, true);
   },
   setChallenge: function(steps, wasChallenge) {
+    this.props.changeTabGame();
     wasChallenge = wasChallenge || false;
     this.stop();
     this.setState({
@@ -590,8 +606,12 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     var showFriendData= this.state.wasChallenge? '': 'hide';
     return (
       React.DOM.div({className: "challenge-block"}, 
-        React.DOM.h2(null, " 2) Start your challenge  "), 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Start your challenge"
+        ), 
         React.DOM.button({
+          className: "button btn-default", 
           onClick: this.start}, 
           this.state.startButton
         ), 
@@ -615,6 +635,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
              "challenge in ", this.state.friendData.time, " seconds"
           ), 
           React.DOM.button({
+            className: "button btn-default", 
             onClick: this.generateUrl}, 
             "Generate Url"  
           ), 
@@ -690,18 +711,99 @@ SummaryView = React.createClass({displayName: 'SummaryView',
   }
 });
 
+var PickHeroView = React.createClass({displayName: 'PickHeroView',
+  render: function() {
+    return(
+      React.DOM.section({id: "tab-pick-hero", 
+        className: "tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Choose a hero"
+        ), 
+        React.DOM.div({
+          className: "soon text-center"}, 
+          "Coming soon"
+        )
+      )
+    );
+  }
+});
+
+var PickItemView = React.createClass({displayName: 'PickItemView',
+  render: function() {
+    return(
+      React.DOM.section({id: "tab-pick-item", 
+        className: "tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Choose your items"
+        ), 
+        React.DOM.div({
+          className: "soon text-center"}, 
+          "Coming soon"
+        )
+      )
+    );
+  }
+});
+
+var SettingsView = React.createClass({displayName: 'SettingsView',
+  render: function() {
+    return(
+      React.DOM.section({id: "tab-settings", 
+        className: "tab-content"}, 
+        React.DOM.h2({
+          className: "tab-title text-center"}, 
+          "Set your custom keys and more"
+        ), 
+        React.DOM.div({
+          className: "soon text-center"}, 
+          "Coming soon"
+        )
+      )
+    );
+  }
+});
+
 var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   getInitialState: function() {
     dispatcher.subscribe('clearHero', this.clearHero);
+    var tabs = [
+      {
+        name: '1) Pick hero',
+        target: '#tab-pick-hero',
+        active: false
+      }, {
+        name: '2) Pick items',
+        target: '#tab-pick-item',
+        active: false
+      }, {
+        name: '3) Settings',
+        target: '#tab-settings',
+        active: false
+      }, {
+        name: '4) Set Challenge',
+        target: '#tab-set-challenge',
+        active: false
+      }, {
+        name: '5) Go game',
+        target: '#tab-game',
+        active: false
+      }
+    ];
+
     return {
       data: this.props.data,
-      itemsSlots: new ItemsSlots()
+      itemsSlots: new ItemsSlots(),
+      tabs: tabs,
+      activeTab: 3
     };
   },
   componentDidMount: function() {
     var heroSelected;
     heroSelected = heroMng.heros['invoker'];
     this.updateHero(heroSelected);
+    this.changeTab(this.state.activeTab);
   },
   createFun: function(obj) {
     return function(param) {
@@ -766,15 +868,66 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
       });
     }
   },
+  changeTabGame: function() {
+    this.changeTab(4);
+  },
+  changeTab: function(index) {
+    if (index == -1) {
+      return;
+    }
+    var tabs = this.state.tabs;
+    var id;
+    var activeTab = this.state.activeTab;
+    if (activeTab > -1) {
+      id = tabs[activeTab].target;
+      tabs[activeTab].active = false;
+      $(id).removeClass('tab-show');
+    }
+    id = tabs[index].target;
+    $(id).addClass('tab-show');
+    tabs[index].active = true;
+
+    this.setState({
+      activeTab: index,
+      tabs: tabs
+    });
+  },
   render: function() {
+    var self = this;
+    var tabs = this.state.tabs.map(function(item, i) {
+      var itemClass = 'tab-item button ' + (item.active ? 'selected': '');
+      return (
+        React.DOM.li({
+          className: "same-line-top"}, 
+          React.DOM.span({
+            className: itemClass, 
+            onClick: self.changeTab.bind(null, i)}, item.name
+          )
+        )
+      )
+    });
     return (
-      React.DOM.div({main: true}, 
-        React.DOM.h1({className: "game-title"}, "DOTA PRACTICE"), 
+      React.DOM.div(null, 
+        React.DOM.h1({className: "game-title text-center"}, "DOTA PRACTICE"), 
+        
+        React.DOM.section(null, 
+          React.DOM.ul({className: "clear-list text-center"}, 
+            tabs
+          )
+        ), 
+
+        PickHeroView(null), 
+        PickItemView(null), 
+        SettingsView(null), 
         SelectChallenge({
           heroSelected: this.state.data, 
           itemsSelected: this.state.itemsSlots}), 
-        React.DOM.div({className: "main-block same-line"}, 
+
+        React.DOM.div({
+          id: "tab-game", 
+          className: "main-block same-line tab-content"}, 
           ChallengeTemplate({
+            changeTabGame: this.changeTabGame, 
             updateHero: this.updateHero, 
             heroSelected: this.state.data, 
             itemsSelected: this.state.itemsSlots}), 
@@ -788,6 +941,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
             "Some skills require a click on an enemy(red circle) to be use."
           )
         )
+
       )
     );
   }
