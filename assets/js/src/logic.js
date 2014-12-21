@@ -768,42 +768,40 @@ var SettingsView = React.createClass({
 var BaseTemplate = React.createClass({
   getInitialState: function() {
     dispatcher.subscribe('clearHero', this.clearHero);
-    var tabs = [
-      {
-        name: '1) Pick hero',
-        target: '#tab-pick-hero',
-        active: false
-      }, {
-        name: '2) Pick items',
-        target: '#tab-pick-item',
-        active: false
-      }, {
-        name: '3) Settings',
-        target: '#tab-settings',
-        active: false
-      }, {
-        name: '4) Set Challenge',
-        target: '#tab-set-challenge',
-        active: false
-      }, {
-        name: '5) Go game',
-        target: '#tab-game',
-        active: false
-      }
-    ];
-
+    var tm = new TabsManager([
+      new Tab({
+        name: 'pickHero',
+        text: '1) Pick hero',
+        target: '#tab-pick-hero'
+      }), new Tab({
+        name: 'pickItem',
+        text: '2) Pick items',
+        target: '#tab-pick-item'
+      }), new Tab({
+        name: 'settings',
+        text: '3) Settings',
+        target: '#tab-settings'
+      }), new Tab({
+        name: 'setChallenge',
+        text: '4) Set Challenge',
+        target: '#tab-set-challenge'
+      }), new Tab({
+        name: 'goGame',
+        text: '5) Go game',
+        target: '#tab-game'
+      })
+    ]);
     return {
+      tabsMng: tm,
       data: this.props.data,
-      itemsSlots: new ItemsSlots(),
-      tabs: tabs,
-      activeTab: 3
+      itemsSlots: new ItemsSlots()
     };
   },
   componentDidMount: function() {
     var heroSelected;
     heroSelected = heroMng.heros['invoker'];
     this.updateHero(heroSelected);
-    this.changeTab(this.state.activeTab);
+    this.changeTab(3);
   },
   createFun: function(obj) {
     return function(param) {
@@ -872,30 +870,29 @@ var BaseTemplate = React.createClass({
     this.changeTab(4);
   },
   changeTab: function(index) {
-    if (index == -1) {
-      return;
-    }
-    var tabs = this.state.tabs;
+    var activeTab = this.state.tabsMng.activeTab;
+    var tabs = this.state.tabsMng.tabs;
     var id;
-    var activeTab = this.state.activeTab;
     if (activeTab > -1) {
       id = tabs[activeTab].target;
-      tabs[activeTab].active = false;
       $(id).removeClass('tab-show');
     }
     id = tabs[index].target;
     $(id).addClass('tab-show');
-    tabs[index].active = true;
 
     this.setState({
-      activeTab: index,
-      tabs: tabs
+      tabsMng: this.state.tabsMng.changeTab(index)
     });
   },
   render: function() {
     var self = this;
-    var tabs = this.state.tabs.map(function(item, i) {
-      var itemClass = 'tab-item button ' + (item.active ? 'selected': '');
+    var activeTab = this.state.tabsMng.activeTab;
+
+    var tabs = this.state.tabsMng.tabs.map(function(item, i) {
+      var itemClass = 'tab-item button ';
+      if (i == activeTab) {
+        itemClass+= 'selected';
+      }
       return (
         <li 
           className='same-line-top'>
