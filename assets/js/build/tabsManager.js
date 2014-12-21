@@ -27,9 +27,9 @@ Tab.prototype.unregister = function(key) {
   return this;
 };
 
-Tab.prototype.emmit = function(key) {
+Tab.prototype.emit = function(key) {
   var fun, k;
-  if (!acceptKey) {
+  if (!this.acceptKey) {
     return;
   }
   if (this.queueFun.length === 1) {
@@ -53,15 +53,15 @@ TabsManager.prototype.findByName = function(name) {
   var i;
   i = 0;
   while (i < this.tabs.length) {
-    if (this.tabs[i] === name) {
+    if (this.tabs[i].name === name) {
       break;
     }
+    i++;
   }
   return i;
 };
 
 TabsManager.prototype.changeTab = function(index) {
-  console.log(index, 'index');
   this.activeTab = index;
   return this;
 };
@@ -77,6 +77,10 @@ TabsManager.prototype.registerEvent = function(name, key, action) {
 };
 
 TabsManager.prototype.emit = function(key) {
+  if (!key) {
+    return this;
+  }
+  this.tabs[this.activeTab].emit(key);
   return this;
 };
 

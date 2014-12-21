@@ -3,14 +3,18 @@ var dispatcher = (function() {
   var queueKey = {};
   var queueFun = {};
   window.onkeydown = function(e) {
-    if (!active) {
+    
+    /*if (!active) {
       return
-    }
+    }*/
     var code = e.keyCode ? e.keyCode: e.which;
     var key = KeyCode[code];
+    /*
     if (key in queueKey) {
       queueKey[key]();
-    }
+    }*/
+    console.log(key, 'key');
+    dispatcher.execute('emit', key);
   }
 
   return {
