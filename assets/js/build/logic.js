@@ -107,19 +107,6 @@ var ItemList = React.createClass({displayName: 'ItemList',
       itemsSlots: this.props.itemsSlots
     }
   },
-  componentDidMount: function() {
-    var elm;
-    var fun = this.state.itemsSlots.launch;
-    for (var i = 0; i < this.state.itemsSlots.slots.length; i++) {
-      elm = this.state.itemsSlots.slots[i];
-      var paramData = {
-        name: 'goGame',
-        key: elm.key,
-        action: this.createLaunch(this.state.itemsSlots, i)
-      }
-      dispatcher.execute('registerEvent', paramData);
-    }
-  },
   createLaunch: function(obj, index) {
     return function() {
       obj.launch(index)
@@ -762,7 +749,66 @@ var PickItemView = React.createClass({displayName: 'PickItemView',
 });
 
 var SettingsView = React.createClass({displayName: 'SettingsView',
+  getInitialState: function() {
+    return {
+      type: '',
+      index: -1
+    }
+  },
+  listenKey: function(key) {
+    this.switchStatus(false);
+    console.log('listenkey', key);
+    if (this.state.type == 'item') {
+      console.log('listenkey item', key);
+      this.props.updateKeyItem(this.state.index, key);
+    }
+  },
+  componentDidMount: function() {
+    var self = this;
+    var paramData = {
+      name: 'settings',
+      key: '',
+      action: function(key) {
+        self.listenKey(key);
+      }
+    }
+    dispatcher.execute('registerEvent', paramData);
+  },
+  switchStatus: function(status) {
+    dispatcher.execute('switchStatus', {
+      name: 'settings',
+      status: status
+    });
+  },
+  updateKeyItem: function(index) {
+    console.log('updateKeyItem');
+    this.switchStatus(true);
+    this.setState({
+      type: 'item',
+      index: index
+    });
+  },
   render: function() {
+    //updateKeyItem
+    var self= this;
+    var itemSlots = this.props.itemSlots.map(function(slot, i) {
+      return (
+        React.DOM.li({
+          className: "same-line-top", 
+          onClick: self.updateKeyItem.bind(null, i)}, 
+          slot.key
+        )
+      )
+    });
+
+    var skillSlots = this.props.skillSlots.map(function(slot, i) {
+      return (
+        React.DOM.li({className: "same-line-top"}, 
+          slot.key
+        )
+      )
+    });
+
     return(
       React.DOM.section({id: "tab-settings", 
         className: "tab-content"}, 
@@ -771,8 +817,13 @@ var SettingsView = React.createClass({displayName: 'SettingsView',
           "Set your custom keys and more"
         ), 
         React.DOM.div({
-          className: "soon text-center"}, 
-          "Coming soon (23/12/2014)"
+          className: ""}, 
+          React.DOM.ul({className: "clear-list"}, 
+            skillSlots
+          ), 
+          React.DOM.ul({className: "clear-list"}, 
+            itemSlots
+          )
         )
       )
     );
@@ -822,9 +873,24 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   },
   componentDidMount: function() {
     var heroSelected;
+    var elm;
     heroSelected = heroMng.heros['invoker'];
     this.updateHero(heroSelected);
-    this.changeTab(3);
+    this.changeTab(3);    
+    for (var i = 0; i < this.state.itemsSlots.slots.length; i++) {
+      elm = this.state.itemsSlots.slots[i];
+      var paramData = {
+        name: 'goGame',
+        key: elm.key,
+        action: this.createLaunch(this.state.itemsSlots, i)
+      }
+      dispatcher.execute('registerEvent', paramData);
+    }
+  },
+  createLaunch: function(obj, index) {
+    return function() {
+      obj.launch(index)
+    }
   },
   createFun: function(obj) {
     return function(param) {
@@ -869,26 +935,32 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     
     if (this.state.data.name == 'invoker') {
       dispatcher.execute('clearSkill');
-      var paramData = {
+      
+      dispatcher.execute('registerEvent', {
         name: 'goGame',
         key: 'd',
         action: function() {
           dispatcher.execute('useExtraSkill', 3);
         }
-      }
-      dispatcher.execute('registerEvent', paramData);
+      });
       
-      //falta 4
+      dispatcher.execute('registerEvent', {
+        name: 'goGame',
+        key: 'f',
+        action: function() {
+          dispatcher.execute('useExtraSkill', 4);
+        }
+      });
 
       var data = this.state.data;
       data.skills[3].obj = new Skill({
-        key: 'd',
+        key: data.skills[3].key,
         customFun: function() {
           
         }
       });
       data.skills[4].obj = new Skill({
-        key: 'f',
+        key: data.skills[4].key,
         customFun: function() {
           
         }
@@ -914,6 +986,34 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
 
     this.setState({
       tabsMng: this.state.tabsMng.changeTab(index)
+    });
+  },
+  updateKeySkill: function(index, key) {
+    var actualSkill = data.skills[index].obj;
+    this.state.tabsMng.unregisterEvent();
+    keyBind = actualSkill.key;
+    var paramData = {
+      name: 'goGame',
+      key: keyBind,
+      action: this.createFun(actualSkill)
+    }
+    dispatcher.execute('registerEvent', paramData);
+  },
+  updateKeyItem: function(index, key) {
+    console.log('updateKeyItem', index, key);
+    var item = this.state.itemsSlots.slots[index];
+    var tm = this.state.tabsMng;
+    tm.unregisterEvent('goGame', key);
+    item.key = key;
+    var paramData = {
+        name: 'goGame',
+        key: key,
+        action: this.createLaunch(this.state.itemsSlots, index)
+      }
+    dispatcher.execute('registerEvent', paramData);
+
+    this.setState({
+      tabsMng: tm
     });
   },
   render: function() {
@@ -947,7 +1047,10 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
 
         PickHeroView(null), 
         PickItemView(null), 
-        SettingsView(null), 
+        SettingsView({
+          itemSlots: this.state.itemsSlots.slots, 
+          skillSlots: this.state.data.skills, 
+          updateKeyItem: this.updateKeyItem}), 
         SelectChallenge({
           heroSelected: this.state.data, 
           itemsSelected: this.state.itemsSlots}), 

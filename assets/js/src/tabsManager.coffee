@@ -22,10 +22,11 @@ Tab::unregister = (key) ->
   return this
 
 Tab::emit = (key) ->
+  
   if not this.acceptKey 
     return
 
-  if this.queueFun.length == 1
+  if Object.keys(this.queueFun).length == 1
     fun = {};
     for k of this.queueFun
       fun = this.queueFun[k]
@@ -52,6 +53,13 @@ TabsManager::changeTab = (index) ->
   #if noFocus
   #  noFocus()
   this.activeTab = index
+  return this
+
+TabsManager::unregisterEvent = (name, key) ->
+  idx = this.findByName(name)
+  if idx < 0
+    return this
+  this.tabs[idx].unregister(key)
   return this
 
 TabsManager::registerEvent = (name, key, action) ->

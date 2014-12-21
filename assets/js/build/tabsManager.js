@@ -32,7 +32,7 @@ Tab.prototype.emit = function(key) {
   if (!this.acceptKey) {
     return;
   }
-  if (this.queueFun.length === 1) {
+  if (Object.keys(this.queueFun).length === 1) {
     fun = {};
     for (k in this.queueFun) {
       fun = this.queueFun[k];
@@ -63,6 +63,16 @@ TabsManager.prototype.findByName = function(name) {
 
 TabsManager.prototype.changeTab = function(index) {
   this.activeTab = index;
+  return this;
+};
+
+TabsManager.prototype.unregisterEvent = function(name, key) {
+  var idx;
+  idx = this.findByName(name);
+  if (idx < 0) {
+    return this;
+  }
+  this.tabs[idx].unregister(key);
   return this;
 };
 
