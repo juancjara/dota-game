@@ -754,7 +754,7 @@ var SettingsView = React.createClass({displayName: 'SettingsView',
         className: "tab-content"}, 
         React.DOM.h2({
           className: "tab-title text-center"}, 
-          "Set your custom keys and moregit"
+          "Set your custom keys and more"
         ), 
         React.DOM.div({
           className: "soon text-center"}, 
