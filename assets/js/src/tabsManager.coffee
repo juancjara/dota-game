@@ -21,8 +21,8 @@ Tab::unregister = (key) ->
     delete this.queueFun[key]
   return this
 
-Tab::emmit = (key) ->
-  if not acceptKey 
+Tab::emit = (key) ->
+  if not this.acceptKey 
     return
 
   if this.queueFun.length == 1
@@ -42,15 +42,15 @@ TabsManager = (tabs) ->
 TabsManager::findByName = (name) ->
   i = 0
   while i < this.tabs.length
-    if this.tabs[i] == name
+    if this.tabs[i].name == name
       break
+    i++
   return i
 
 TabsManager::changeTab = (index) ->
   #noFocus = this.views[index].noFocus;
   #if noFocus
   #  noFocus()
-  console.log(index, 'index')
   this.activeTab = index
   return this
 
@@ -62,6 +62,9 @@ TabsManager::registerEvent = (name, key, action) ->
   return this
 
 TabsManager::emit = (key) ->
+  if not key
+    return this
+  this.tabs[this.activeTab].emit(key);
   return this
 
 TabsManager::switchStatus = (name, status) ->

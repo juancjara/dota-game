@@ -112,8 +112,12 @@ var ItemList = React.createClass({displayName: 'ItemList',
     var fun = this.state.itemsSlots.launch;
     for (var i = 0; i < this.state.itemsSlots.slots.length; i++) {
       elm = this.state.itemsSlots.slots[i];
-      dispatcher.subscribeKey(elm.key, 
-        this.createLaunch(this.state.itemsSlots, i));
+      var paramData = {
+        name: 'goGame',
+        key: elm.key,
+        action: this.createLaunch(this.state.itemsSlots, i)
+      }
+      dispatcher.execute('registerEvent', paramData);
     }
   },
   createLaunch: function(obj, index) {
@@ -500,7 +504,10 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
       challenge: this.state.challenge.step(skill)
     });
     if (!this.state.challenge.active) {
-      dispatcher.offEvents();
+      dispatcher.execute('switchStatus', {
+        name: 'goGame',
+        status: false
+      });
     }
   },
   generateUrl: function() {
@@ -522,7 +529,11 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
   },
   startChallenge: function() {
     this.clearChallenge();
-    dispatcher.onEvents();
+    dispatcher.execute('switchStatus', {
+      name: 'goGame',
+      status: true
+    });
+    
     this.setState({
       challenge : this.state.challenge.start(),
       message: '',
@@ -572,7 +583,10 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
   },
   stop: function() {
     this.clearChallenge();
-    dispatcher.offEvents();
+    dispatcher.execute('switchStatus', {
+      name: 'goGame',
+      status: false
+    });
     var challenge = this.state.challenge.stop();
     
     this.setState({
@@ -758,7 +772,7 @@ var SettingsView = React.createClass({displayName: 'SettingsView',
         ), 
         React.DOM.div({
           className: "soon text-center"}, 
-          "Coming soon"
+          "Coming soon (23/12/2014)"
         )
       )
     );
@@ -791,6 +805,15 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
         target: '#tab-game'
       })
     ]);
+    dispatcher.subscribe('emit', function(param){
+      tm.emit(param);
+    });
+    dispatcher.subscribe('registerEvent', function(param) {
+      tm.registerEvent(param.name, param.key, param.action);
+    });
+    dispatcher.subscribe('switchStatus', function(param){
+      tm.switchStatus(param.name, param.status)
+    });
     return {
       tabsMng: tm,
       data: this.props.data,
@@ -821,8 +844,12 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
       actualSkill = skills[i];
       data.skills[i].obj = actualSkill;
       keyBind = actualSkill.key;
-      dispatcher.subscribeKey(keyBind, 
-        this.createFun(actualSkill));
+      var paramData = {
+        name: 'goGame',
+        key: keyBind,
+        action: this.createFun(actualSkill)
+      }
+      dispatcher.execute('registerEvent', paramData);
     };
     data.name = newHero.name;
     data.srcImg = newHero.srcImg;
@@ -842,12 +869,17 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     
     if (this.state.data.name == 'invoker') {
       dispatcher.execute('clearSkill');
-      dispatcher.subscribeKey('d', function() {
-        dispatcher.execute('useExtraSkill', 3);
-      });
-      dispatcher.subscribeKey('f', function() {
-        dispatcher.execute('useExtraSkill', 4);
-      });
+      var paramData = {
+        name: 'goGame',
+        key: 'd',
+        action: function() {
+          dispatcher.execute('useExtraSkill', 3);
+        }
+      }
+      dispatcher.execute('registerEvent', paramData);
+      
+      //falta 4
+
       var data = this.state.data;
       data.skills[3].obj = new Skill({
         key: 'd',
@@ -898,7 +930,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
           className: "same-line-top"}, 
           React.DOM.span({
             className: itemClass, 
-            onClick: self.changeTab.bind(null, i)}, item.name
+            onClick: self.changeTab.bind(null, i)}, item.text
           )
         )
       )
