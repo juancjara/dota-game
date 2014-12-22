@@ -131,6 +131,9 @@ input.cmn-toggle-round-flat:checked + label:after {
 .tab-show {
   display: block !important;
 }
+.alert {
+  color: #ff4486;
+}
 .settings .legacy-label {
   display: inline-block;
   font-size: 1.2em;
