@@ -6,6 +6,9 @@ Tab = (data) ->
   this.active = false
   this.queueFun = {}
   this.acceptKey = false
+  funAux = () ->
+    return
+  this.noFocus = data.noFocus || funAux
   return
 
 Tab::switchStatus = (status) ->
@@ -50,18 +53,15 @@ TabsManager::findByName = (name) ->
   return i
 
 TabsManager::changeTab = (index) ->
-  #noFocus = this.views[index].noFocus;
-  #if noFocus
-  #  noFocus()
+  if this.activeTab >= 0
+    this.tabs[this.activeTab].noFocus()
   this.activeTab = index
   return this
 
 TabsManager::unregisterEvent = (name, key) ->
-  console.log('unregisterEvent', name, key)
   idx = this.findByName(name)
   if idx < 0
     return this
-  console.log(idx);
   this.tabs[idx].unregister(key)
   return this
 
