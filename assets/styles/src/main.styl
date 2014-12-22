@@ -90,6 +90,7 @@ input.cmn-toggle-round-flat:checked + label:after
 
 .row
   vertical-align: middle
+  margin: 5px 0;
 
 .button
   background: rgba(0,0,0,0.085)
@@ -136,13 +137,42 @@ input.cmn-toggle-round-flat:checked + label:after
 .settings
   
   .legacy-label
+    display: inline-block
     font-size: 1.2em
-    vertical-align: middle
-    display: inline-block
     padding: 0 10px 0 0
-  .legacy-switch
     vertical-align: middle
+  .legacy-switch
     display: inline-block
+    vertical-align: middle
+  .slot
+    background-color: rgb(68, 68, 68)
+    border-radius: 6px
+    border: 4px solid rgb(68, 68, 68)
+    box-sizing: border-box
+    cursor: pointer
+    height: 90px
+    margin: 5px 5px
+    position: relative
+    width: 90px
+    .key
+      color: white
+      font-size: 24px
+      font-weight: bold
+      padding-left: 5px
+    .text
+      bottom: 0px
+      color: white
+      font-size: 50px
+      font-weight: bold
+      opacity: 0.4
+      position: absolute
+      right: 10px
+    &.selected
+      border: 4px solid yellow
+  .items-slots
+    width: 300px
+  .label
+    font-size: 1.2em
 //
 
 footer

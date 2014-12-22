@@ -763,10 +763,13 @@ var PickItemView = React.createClass({
 
 var SettingsView = React.createClass({
   getInitialState: function() {
+    
     return {
       type: '',
       index: -1,
-      skillKeys: ['q', 'w', 'e', 'd', 'f', 'r']
+      skillKeys: ['q', 'w', 'e', 'd', 'f', 'r'],
+      activeSkills: [false, false, false, false, false, false],
+      activeItems: [false, false, false, false, false, false]
     }
   },
   checkIfUsed: function(key) {
@@ -813,16 +816,39 @@ var SettingsView = React.createClass({
       status: status
     });
   },
+  updateActive: function(index, typeEvent, value) {
+    if (index == -1 ) return
+    if (typeEvent == 'skill') {
+      var activeSkills = this.state.activeSkills;
+      activeSkills[index] = value;
+      this.setState({
+        activeSkills: activeSkills
+      });
+    }
+    else {
+      var activeItems = this.state.activeItems;
+      activeItems[index] = value;
+      this.setState({
+        activeItems: activeItems
+      });
+    }
+  },
+  newActive: function(index, typeEvent) {
+    this.updateActive(this.state.index, this.state.type, false);
+    this.updateActive(index, typeEvent, true);
+  },
   updateKey: function(index, typeEvent) {
     if (typeEvent == 'skill' && this.props.legacyMode) {
       return;
     }
     this.switchStatus(true);
-    
+    this.newActive(index, typeEvent);
+
     $('body').off('click');
     $('body').on('click', function() {
       this.switchStatus(false);
       $('body').off('click');
+      this.updateActive(this.state.index, this.state.type, false);
     }.bind(this));
 
     this.setState({
@@ -838,23 +864,35 @@ var SettingsView = React.createClass({
     });
   },
   render: function() {
+    var texts = [1, 2, 3, 4, 5, 'U'];
     
-    var itemsSlots = this.props.itemsSlots.map(function(slot, i) {
+    var skillSlots = this.state.skillKeys.map(function(key, i) {
+      var className = 'same-line-top slot ' + 
+                      (this.state.activeSkills[i] ? 'selected': '');
       return (
         <li 
-          className='same-line-top'
-          onClick={this.updateKey.bind(null, i, 'item')}>
-          {slot.key}
+          className={className}
+          onClick={this.updateKey.bind(null, i, 'skill')}>
+          <span className='key'>
+            {key}
+          </span>
+          <span className='text'>
+            {texts[i]}
+          </span>
         </li>
       )
     }.bind(this));
 
-    var skillSlots = this.state.skillKeys.map(function(key, i) {
+    var itemsSlots = this.props.itemsSlots.map(function(slot, i) {
+      var className = 'same-line-top slot ' + 
+                      (this.state.activeItems[i] ? 'selected': '');
       return (
         <li 
-          className='same-line-top'
-          onClick={this.updateKey.bind(null, i, 'skill')}>
-          {key}
+          className={className}
+          onClick={this.updateKey.bind(null, i, 'item')}>
+          <span className='key'>
+            {slot.key}
+          </span>
         </li>
       )
     }.bind(this));
@@ -872,23 +910,34 @@ var SettingsView = React.createClass({
             Legacy Mode
           </div>
           <div className='legacy-switch'>
-          <input 
-            type='checkbox' 
-            id='legacyModeSwitch'
-            checked={this.props.legacyMode} 
-            className='cmn-toggle cmn-toggle-round-flat'/>
-          <label 
-            for='legacyModeSwitch'
-            onClick={this.props.toggleLegacy}>
-          </label>
-        </div>
+            <input 
+              type='checkbox' 
+              id='legacyModeSwitch'
+              checked={this.props.legacyMode} 
+              className='cmn-toggle cmn-toggle-round-flat'/>
+            <label 
+              for='legacyModeSwitch'
+              onClick={this.props.toggleLegacy}>
+            </label>
+          </div>
         </div>
         <div 
-          className=''>
+          className='row'>
+          <label 
+            className='label'>
+            Skills
+          </label>
           <ul className='clear-list'>
             {skillSlots}
           </ul>
-          <ul className='clear-list'>
+        </div>
+        <div 
+          className='row'>
+          <label 
+            className='label'>
+            Items
+          </label>
+          <ul className='clear-list items-slots'>
             {itemsSlots}
           </ul>
         </div>
