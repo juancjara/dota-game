@@ -905,6 +905,12 @@ var SettingsView = React.createClass({
           Set your custom keys and more
         </h2>
         <div className='row'>
+          <label 
+            className='label alert'>
+            Click slot and press key. Allowed keys 'a' to 'z' , '0' to '9' and space bar.
+          </label>
+        </div>
+        <div className='row'>
           <div 
             className='legacy-label'>
             Legacy Mode
