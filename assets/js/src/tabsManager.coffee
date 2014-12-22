@@ -32,7 +32,8 @@ Tab::emit = (key) ->
       fun = this.queueFun[k]
     fun(key)
   else
-    this.queueFun[key]()
+    if key of this.queueFun
+      this.queueFun[key]()
   return this
 
 TabsManager = (tabs) ->
@@ -56,9 +57,11 @@ TabsManager::changeTab = (index) ->
   return this
 
 TabsManager::unregisterEvent = (name, key) ->
+  console.log('unregisterEvent', name, key)
   idx = this.findByName(name)
   if idx < 0
     return this
+  console.log(idx);
   this.tabs[idx].unregister(key)
   return this
 

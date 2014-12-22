@@ -39,7 +39,9 @@ Tab.prototype.emit = function(key) {
     }
     fun(key);
   } else {
-    this.queueFun[key]();
+    if (key in this.queueFun) {
+      this.queueFun[key]();
+    }
   }
   return this;
 };
@@ -68,10 +70,12 @@ TabsManager.prototype.changeTab = function(index) {
 
 TabsManager.prototype.unregisterEvent = function(name, key) {
   var idx;
+  console.log('unregisterEvent', name, key);
   idx = this.findByName(name);
   if (idx < 0) {
     return this;
   }
+  console.log(idx);
   this.tabs[idx].unregister(key);
   return this;
 };

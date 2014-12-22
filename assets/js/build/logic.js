@@ -18,9 +18,7 @@ var SkillSlot = React.createClass({displayName: 'SkillSlot',
 
 var SkillList = React.createClass({displayName: 'SkillList',
   getInitialState: function() {
-    //dispatcher.subscribe('clearHero', this.clearSkill);
     dispatcher.subscribe('changeSkill', this.changeSkill);
-    dispatcher.subscribe('clearSkill', this.clearLastSkill);
     dispatcher.subscribe('getLastSkill', this.getLastSkill);
     dispatcher.subscribe('useExtraSkill', this.useExtraSkill);
     return {
@@ -41,28 +39,48 @@ var SkillList = React.createClass({displayName: 'SkillList',
   useExtraSkill: function(index) {
     this.state.skills[index].obj.fun();
   },
-  clearSkill: function() {
-    var skills = this.state.skills;
-    skills[3].obj = new Skill({
-      key: 'd'
-    })
-  },
   getLastSkill: function() {
     return this.state.lastSkill;
   },
   changeSkill: function(index) {
     //TODO ver si se debe actualizar todo el objeto o no
     //cuidar no actualizar la funcion del obj
+    console.log('changeSkill', this.props.legacyMode);
 
     //TODO si no es wtf actualizar al nuevo key
     var extraSkills = this.props.extraSkills;
     var skills = this.state.skills;
 
-    var temp4fun = skills[4].obj.fun;
-    var temp3fun = skills[3].obj.fun;
-
+    //useExtraSkill 4
+    var keyGone = skills[4]
     skills[4].obj = skills[3].obj;
+    skills[4].key = skills[3].key;
     skills[3].obj = extraSkills[index];
+    skills[3].key = extraSkills[index].key;
+
+    if (this.props.legacyMode) {
+      //unsuscribe 4 keygone
+      
+      dispatcher.execute('unregisterEvent', {
+        name: 'goGame',
+        key: keyGone
+      });
+      dispatcher.execute('registerEvent', {
+        name: 'goGame',
+        key: skills[4].key,
+        action: function() {
+          dispatcher.execute('useExtraSkill', 4);
+        }
+      });
+      //register 3
+      dispatcher.execute('registerEvent', {
+        name: 'goGame',
+        key: skills[3].key,
+        action: function() {
+          dispatcher.execute('useExtraSkill', 3);
+        }
+      });
+    }
 
     this.setState({
       skills: skills,
@@ -205,7 +223,8 @@ var HeroTemplate = React.createClass({displayName: 'HeroTemplate',
           InvokerStatus(null), 
           SkillList({
             list: this.props.heroData.skills, 
-            extraSkills: this.props.heroData.extraSkills})
+            extraSkills: this.props.heroData.extraSkills, 
+            legacyMode: this.props.legacyMode})
         )
       )
     );
@@ -752,15 +771,25 @@ var SettingsView = React.createClass({displayName: 'SettingsView',
   getInitialState: function() {
     return {
       type: '',
-      index: -1
+      index: -1,
+      skillKeys: ['q', 'w', 'e', 'd', 'f', 'r']
     }
   },
   listenKey: function(key) {
     this.switchStatus(false);
-    console.log('listenkey', key);
+    console.log('listenkey', key, this.state.type);
     if (this.state.type == 'item') {
       console.log('listenkey item', key);
       this.props.updateKeyItem(this.state.index, key);
+    }
+    if (this.state.type == 'skill') {
+      console.log('listenkey skill', key);
+      this.props.updateKeySkill(this.state.index, key);
+      var skillKeys = this.state.skillKeys;
+      skillKeys[this.state.index] = key;
+      this.setState({
+        skillKeys: skillKeys
+      });
     }
   },
   componentDidMount: function() {
@@ -780,34 +809,42 @@ var SettingsView = React.createClass({displayName: 'SettingsView',
       status: status
     });
   },
-  updateKeyItem: function(index) {
-    console.log('updateKeyItem');
+  updateKey: function(index, typeEvent) {
+    console.log('updateKey');
     this.switchStatus(true);
     this.setState({
-      type: 'item',
+      type: typeEvent,
       index: index
     });
   },
+  toggleLegacy: function() {
+    var legacyMode = !this.state.legacyMode;
+    this.props.toggleLegacy(legacyMode)
+    this.setState({
+      legacyMode: legacyMode
+    });
+  },
   render: function() {
-    //updateKeyItem
-    var self= this;
+    
     var itemSlots = this.props.itemSlots.map(function(slot, i) {
       return (
         React.DOM.li({
           className: "same-line-top", 
-          onClick: self.updateKeyItem.bind(null, i)}, 
+          onClick: this.updateKey.bind(null, i, 'item')}, 
           slot.key
         )
       )
-    });
+    }.bind(this));
 
-    var skillSlots = this.props.skillSlots.map(function(slot, i) {
+    var skillSlots = this.state.skillKeys.map(function(key, i) {
       return (
-        React.DOM.li({className: "same-line-top"}, 
-          slot.key
+        React.DOM.li({
+          className: "same-line-top", 
+          onClick: this.updateKey.bind(null, i, 'skill')}, 
+          key
         )
       )
-    });
+    }.bind(this));
 
     return(
       React.DOM.section({id: "tab-settings", 
@@ -815,6 +852,12 @@ var SettingsView = React.createClass({displayName: 'SettingsView',
         React.DOM.h2({
           className: "tab-title text-center"}, 
           "Set your custom keys and more"
+        ), 
+        React.DOM.div(null, 
+          React.DOM.input({
+            type: "checkbox", 
+            checked: this.props.legacyMode, 
+            onChange: this.props.toggleLegacy})
         ), 
         React.DOM.div({
           className: ""}, 
@@ -868,7 +911,8 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     return {
       tabsMng: tm,
       data: this.props.data,
-      itemsSlots: new ItemsSlots()
+      itemsSlots: new ItemsSlots(),
+      legacyMode: false
     };
   },
   componentDidMount: function() {
@@ -934,11 +978,15 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   clearHero: function() {
     
     if (this.state.data.name == 'invoker') {
-      dispatcher.execute('clearSkill');
-      
+      var tm = this.state.tabsMng;
+
+      //if legacyMode
+      //tm.unregisterEvent('goGame', this.state.data.skills[3].key);
+      //tm.unregisterEvent('goGame', this.state.data.skills[4].key);
+
       dispatcher.execute('registerEvent', {
         name: 'goGame',
-        key: 'd',
+        key: '',
         action: function() {
           dispatcher.execute('useExtraSkill', 3);
         }
@@ -946,7 +994,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
       
       dispatcher.execute('registerEvent', {
         name: 'goGame',
-        key: 'f',
+        key: '',
         action: function() {
           dispatcher.execute('useExtraSkill', 4);
         }
@@ -989,21 +1037,29 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     });
   },
   updateKeySkill: function(index, key) {
+    
+    var data = this.state.data;
     var actualSkill = data.skills[index].obj;
-    this.state.tabsMng.unregisterEvent();
     keyBind = actualSkill.key;
+    var tm = this.state.tabsMng;
+    tm.unregisterEvent('goGame', keyBind);
+    data.skills[index].key = key;
     var paramData = {
       name: 'goGame',
-      key: keyBind,
+      key: key,
       action: this.createFun(actualSkill)
     }
     dispatcher.execute('registerEvent', paramData);
+    console.log(index, key, data)
+    this.setState({
+      data: data
+    });
   },
   updateKeyItem: function(index, key) {
     console.log('updateKeyItem', index, key);
     var item = this.state.itemsSlots.slots[index];
     var tm = this.state.tabsMng;
-    tm.unregisterEvent('goGame', key);
+    tm.unregisterEvent('goGame', item.key);
     item.key = key;
     var paramData = {
         name: 'goGame',
@@ -1014,6 +1070,20 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
 
     this.setState({
       tabsMng: tm
+    });
+  },
+  toggleLegacy: function() {
+    var legacyMode = !this.state.legacyMode;
+    if (legacyMode) {
+      var skills = this.state.data.skills;
+      var key;
+      for (var i = 0; i < skills.length; i++) {
+        key = skills[i].obj.key || '';
+        this.updateKeySkill(i, key)
+      };
+    }
+    this.setState({
+      legacyMode: legacyMode
     });
   },
   render: function() {
@@ -1050,7 +1120,10 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
         SettingsView({
           itemSlots: this.state.itemsSlots.slots, 
           skillSlots: this.state.data.skills, 
-          updateKeyItem: this.updateKeyItem}), 
+          updateKeyItem: this.updateKeyItem, 
+          updateKeySkill: this.updateKeySkill, 
+          toggleLegacy: this.toggleLegacy, 
+          legacyMode: this.state.legacyMode}), 
         SelectChallenge({
           heroSelected: this.state.data, 
           itemsSelected: this.state.itemsSlots}), 
@@ -1065,7 +1138,8 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
             itemsSelected: this.state.itemsSlots}), 
           React.DOM.div({className: "hero-data"}, 
             HeroTemplate({
-              heroData: this.state.data}), 
+              heroData: this.state.data, 
+              legacyMode: this.state.legacyMode}), 
             ItemList({
             itemsSlots: this.state.itemsSlots})
           ), 
@@ -1078,3 +1152,7 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     );
   }
 });
+//TODO on setting stop challenge
+//verify keys on edit
+//show msg item conflict on legacy mode
+//ui settings
