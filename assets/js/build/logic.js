@@ -18,9 +18,7 @@ var SkillSlot = React.createClass({displayName: 'SkillSlot',
 
 var SkillList = React.createClass({displayName: 'SkillList',
   getInitialState: function() {
-    //dispatcher.subscribe('clearHero', this.clearSkill);
     dispatcher.subscribe('changeSkill', this.changeSkill);
-    dispatcher.subscribe('clearSkill', this.clearLastSkill);
     dispatcher.subscribe('getLastSkill', this.getLastSkill);
     dispatcher.subscribe('useExtraSkill', this.useExtraSkill);
     return {
@@ -41,28 +39,40 @@ var SkillList = React.createClass({displayName: 'SkillList',
   useExtraSkill: function(index) {
     this.state.skills[index].obj.fun();
   },
-  clearSkill: function() {
-    var skills = this.state.skills;
-    skills[3].obj = new Skill({
-      key: 'd'
-    })
-  },
   getLastSkill: function() {
     return this.state.lastSkill;
   },
   changeSkill: function(index) {
-    //TODO ver si se debe actualizar todo el objeto o no
-    //cuidar no actualizar la funcion del obj
-
-    //TODO si no es wtf actualizar al nuevo key
     var extraSkills = this.props.extraSkills;
     var skills = this.state.skills;
 
-    var temp4fun = skills[4].obj.fun;
-    var temp3fun = skills[3].obj.fun;
-
+    var keyGone = skills[4].key
     skills[4].obj = skills[3].obj;
     skills[3].obj = extraSkills[index];
+
+    if (this.props.legacyMode) {
+      skills[4].key = skills[4].obj.key;
+      skills[3].key = skills[3].obj.key;
+      dispatcher.execute('unregisterEvent', {
+        name: 'goGame',
+        key: keyGone
+      });
+      dispatcher.execute('registerEvent', {
+        name: 'goGame',
+        key: skills[4].key,
+        action: function() {
+          dispatcher.execute('useExtraSkill', 4);
+        }
+      });
+      
+      dispatcher.execute('registerEvent', {
+        name: 'goGame',
+        key: skills[3].key,
+        action: function() {
+          dispatcher.execute('useExtraSkill', 3);
+        }
+      });
+    }
 
     this.setState({
       skills: skills,
@@ -105,19 +115,6 @@ var ItemList = React.createClass({displayName: 'ItemList',
   getInitialState: function() {
     return {
       itemsSlots: this.props.itemsSlots
-    }
-  },
-  componentDidMount: function() {
-    var elm;
-    var fun = this.state.itemsSlots.launch;
-    for (var i = 0; i < this.state.itemsSlots.slots.length; i++) {
-      elm = this.state.itemsSlots.slots[i];
-      var paramData = {
-        name: 'goGame',
-        key: elm.key,
-        action: this.createLaunch(this.state.itemsSlots, i)
-      }
-      dispatcher.execute('registerEvent', paramData);
     }
   },
   createLaunch: function(obj, index) {
@@ -218,7 +215,8 @@ var HeroTemplate = React.createClass({displayName: 'HeroTemplate',
           InvokerStatus(null), 
           SkillList({
             list: this.props.heroData.skills, 
-            extraSkills: this.props.heroData.extraSkills})
+            extraSkills: this.props.heroData.extraSkills, 
+            legacyMode: this.props.legacyMode})
         )
       )
     );
@@ -448,6 +446,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
   getInitialState: function() {
     dispatcher.subscribe('useSkill', this.action);
     dispatcher.subscribe('setChallenge', this.setChallenge);
+    dispatcher.subscribe('stopChallenge', this.stop)
     var a = new Challenge();
     a.set([]);
     return {
@@ -582,6 +581,7 @@ var ChallengeTemplate = React.createClass({displayName: 'ChallengeTemplate',
     
   },
   stop: function() {
+    dispatcher.execute('clearHero');
     this.clearChallenge();
     dispatcher.execute('switchStatus', {
       name: 'goGame',
@@ -762,17 +762,184 @@ var PickItemView = React.createClass({displayName: 'PickItemView',
 });
 
 var SettingsView = React.createClass({displayName: 'SettingsView',
+  getInitialState: function() {
+    
+    return {
+      type: '',
+      index: -1,
+      skillKeys: ['q', 'w', 'e', 'd', 'f', 'r'],
+      activeSkills: [false, false, false, false, false, false],
+      activeItems: [false, false, false, false, false, false]
+    }
+  },
+  checkIfUsed: function(key) {
+    var skillKeys = this.state.skillKeys;
+    for (var i = 0; i < skillKeys.length; i++) {
+      if (skillKeys[i] == key ) {
+        this.props.updateKeySkill(i, ' ');
+        skillKeys[i] = ' ';
+        this.setState({
+          skillKeys: skillKeys
+        });
+      }
+    };
+  },
+  listenKey: function(key) {
+    this.switchStatus(false);
+    this.checkIfUsed(key);
+    if (this.state.type == 'item') {
+      this.props.updateKeyItem(this.state.index, key);
+    }
+    if (this.state.type == 'skill') {
+      this.props.updateKeySkill(this.state.index, key);
+      var skillKeys = this.state.skillKeys;
+      skillKeys[this.state.index] = key;
+      this.setState({
+        skillKeys: skillKeys
+      });
+    }
+  },
+  componentDidMount: function() {
+    var self = this;
+    var paramData = {
+      name: 'settings',
+      key: '',
+      action: function(key) {
+        self.listenKey(key);
+      }
+    }
+    dispatcher.execute('registerEvent', paramData);
+  },
+  switchStatus: function(status) {
+    dispatcher.execute('switchStatus', {
+      name: 'settings',
+      status: status
+    });
+  },
+  updateActive: function(index, typeEvent, value) {
+    if (index == -1 ) return
+    if (typeEvent == 'skill') {
+      var activeSkills = this.state.activeSkills;
+      activeSkills[index] = value;
+      this.setState({
+        activeSkills: activeSkills
+      });
+    }
+    else {
+      var activeItems = this.state.activeItems;
+      activeItems[index] = value;
+      this.setState({
+        activeItems: activeItems
+      });
+    }
+  },
+  newActive: function(index, typeEvent) {
+    this.updateActive(this.state.index, this.state.type, false);
+    this.updateActive(index, typeEvent, true);
+  },
+  updateKey: function(index, typeEvent) {
+    if (typeEvent == 'skill' && this.props.legacyMode) {
+      return;
+    }
+    this.switchStatus(true);
+    this.newActive(index, typeEvent);
+
+    $('body').off('click');
+    $('body').on('click', function() {
+      this.switchStatus(false);
+      $('body').off('click');
+      this.updateActive(this.state.index, this.state.type, false);
+    }.bind(this));
+
+    this.setState({
+      type: typeEvent,
+      index: index
+    });
+  },
+  toggleLegacy: function() {
+    var legacyMode = !this.state.legacyMode;
+    this.props.toggleLegacy(legacyMode)
+    this.setState({
+      legacyMode: legacyMode
+    });
+  },
   render: function() {
+    var texts = [1, 2, 3, 4, 5, 'U'];
+    
+    var skillSlots = this.state.skillKeys.map(function(key, i) {
+      var className = 'same-line-top slot ' + 
+                      (this.state.activeSkills[i] ? 'selected': '');
+      return (
+        React.DOM.li({
+          className: className, 
+          onClick: this.updateKey.bind(null, i, 'skill')}, 
+          React.DOM.span({className: "key"}, 
+            key
+          ), 
+          React.DOM.span({className: "text"}, 
+            texts[i]
+          )
+        )
+      )
+    }.bind(this));
+
+    var itemsSlots = this.props.itemsSlots.map(function(slot, i) {
+      var className = 'same-line-top slot ' + 
+                      (this.state.activeItems[i] ? 'selected': '');
+      return (
+        React.DOM.li({
+          className: className, 
+          onClick: this.updateKey.bind(null, i, 'item')}, 
+          React.DOM.span({className: "key"}, 
+            slot.key
+          )
+        )
+      )
+    }.bind(this));
+
     return(
       React.DOM.section({id: "tab-settings", 
-        className: "tab-content"}, 
+        className: "tab-content settings"}, 
         React.DOM.h2({
           className: "tab-title text-center"}, 
           "Set your custom keys and more"
         ), 
+        React.DOM.div({className: "row"}, 
+          React.DOM.div({
+            className: "legacy-label"}, 
+            "Legacy Mode"
+          ), 
+          React.DOM.div({className: "legacy-switch"}, 
+            React.DOM.input({
+              type: "checkbox", 
+              id: "legacyModeSwitch", 
+              checked: this.props.legacyMode, 
+              className: "cmn-toggle cmn-toggle-round-flat"}), 
+            React.DOM.label({
+              for: "legacyModeSwitch", 
+              onClick: this.props.toggleLegacy}
+            )
+          )
+        ), 
         React.DOM.div({
-          className: "soon text-center"}, 
-          "Coming soon (23/12/2014)"
+          className: "row"}, 
+          React.DOM.label({
+            className: "label"}, 
+            "Skills"
+          ), 
+          React.DOM.ul({className: "clear-list"}, 
+            skillSlots
+          )
+        ), 
+        React.DOM.div({
+          className: "row"}, 
+          React.DOM.label({
+            className: "label"}, 
+            "Items"
+          ), 
+          React.DOM.ul({className: "clear-list items-slots"}, 
+            itemsSlots
+          )
         )
       )
     );
@@ -802,7 +969,10 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
       }), new Tab({
         name: 'goGame',
         text: '5) Go game',
-        target: '#tab-game'
+        target: '#tab-game',
+        noFocus: function() {
+          dispatcher.execute('stopChallenge');
+        }
       })
     ]);
     dispatcher.subscribe('emit', function(param){
@@ -817,14 +987,30 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     return {
       tabsMng: tm,
       data: this.props.data,
-      itemsSlots: new ItemsSlots()
+      itemsSlots: new ItemsSlots(),
+      legacyMode: false
     };
   },
   componentDidMount: function() {
     var heroSelected;
+    var elm;
     heroSelected = heroMng.heros['invoker'];
     this.updateHero(heroSelected);
-    this.changeTab(3);
+    this.changeTab(2);    
+    for (var i = 0; i < this.state.itemsSlots.slots.length; i++) {
+      elm = this.state.itemsSlots.slots[i];
+      var paramData = {
+        name: 'goGame',
+        key: elm.key,
+        action: this.createLaunch(this.state.itemsSlots, i)
+      }
+      dispatcher.execute('registerEvent', paramData);
+    }
+  },
+  createLaunch: function(obj, index) {
+    return function() {
+      obj.launch(index)
+    }
   },
   createFun: function(obj) {
     return function(param) {
@@ -868,27 +1054,37 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   clearHero: function() {
     
     if (this.state.data.name == 'invoker') {
-      dispatcher.execute('clearSkill');
-      var paramData = {
+      var tm = this.state.tabsMng;
+
+      //if legacyMode
+      //tm.unregisterEvent('goGame', this.state.data.skills[3].key);
+      //tm.unregisterEvent('goGame', this.state.data.skills[4].key);
+
+      dispatcher.execute('registerEvent', {
         name: 'goGame',
-        key: 'd',
+        key: '',
         action: function() {
           dispatcher.execute('useExtraSkill', 3);
         }
-      }
-      dispatcher.execute('registerEvent', paramData);
+      });
       
-      //falta 4
+      dispatcher.execute('registerEvent', {
+        name: 'goGame',
+        key: '',
+        action: function() {
+          dispatcher.execute('useExtraSkill', 4);
+        }
+      });
 
       var data = this.state.data;
       data.skills[3].obj = new Skill({
-        key: 'd',
+        key: data.skills[3].key,
         customFun: function() {
           
         }
       });
       data.skills[4].obj = new Skill({
-        key: 'f',
+        key: data.skills[4].key,
         customFun: function() {
           
         }
@@ -914,6 +1110,67 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
 
     this.setState({
       tabsMng: this.state.tabsMng.changeTab(index)
+    });
+  },
+  updateKeySkill: function(index, key) {
+    this.clearKeyIfItemUse(key);
+    var data = this.state.data;
+    var actualSkill = data.skills[index];
+    var keyBind = actualSkill.key;
+    var tm = this.state.tabsMng;
+    tm.unregisterEvent('goGame', keyBind);
+    data.skills[index].key = key;
+    var paramData = {
+      name: 'goGame',
+      key: key,
+      action: this.createFun(actualSkill.obj)
+    }
+    dispatcher.execute('registerEvent', paramData);
+    this.setState({
+      data: data
+    });
+  },
+  clearKeyIfItemUse: function(key) {
+    var itemsSlots = this.state.itemsSlots;
+    for (var i = 0; i < itemsSlots.slots.length; i++) {
+      if (itemsSlots.slots[i].key == key) {
+        itemsSlots.slots[i].key = '';
+      }
+    }
+    this.setState({
+      itemsSlots: itemsSlots
+    });
+  },
+  updateKeyItem: function(index, key) {
+    var itemsSlots = this.state.itemsSlots;
+    var item = itemsSlots.slots[index];
+    var tm = this.state.tabsMng;
+    tm.unregisterEvent('goGame', item.key);
+    item.key = key;
+    var paramData = {
+        name: 'goGame',
+        key: key,
+        action: this.createLaunch(this.state.itemsSlots, index)
+      }
+    dispatcher.execute('registerEvent', paramData);
+
+    this.setState({
+      tabsMng: tm,
+      itemsSlots: itemsSlots
+    });
+  },
+  toggleLegacy: function() {
+    var legacyMode = !this.state.legacyMode;
+    if (legacyMode) {
+      var skills = this.state.data.skills;
+      var key;
+      for (var i = 0; i < skills.length; i++) {
+        key = skills[i].obj.key || '';
+        this.updateKeySkill(i, key)
+      };
+    }
+    this.setState({
+      legacyMode: legacyMode
     });
   },
   render: function() {
@@ -947,7 +1204,13 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
 
         PickHeroView(null), 
         PickItemView(null), 
-        SettingsView(null), 
+        SettingsView({
+          itemsSlots: this.state.itemsSlots.slots, 
+          skillSlots: this.state.data.skills, 
+          updateKeyItem: this.updateKeyItem, 
+          updateKeySkill: this.updateKeySkill, 
+          toggleLegacy: this.toggleLegacy, 
+          legacyMode: this.state.legacyMode}), 
         SelectChallenge({
           heroSelected: this.state.data, 
           itemsSelected: this.state.itemsSlots}), 
@@ -962,7 +1225,8 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
             itemsSelected: this.state.itemsSlots}), 
           React.DOM.div({className: "hero-data"}, 
             HeroTemplate({
-              heroData: this.state.data}), 
+              heroData: this.state.data, 
+              legacyMode: this.state.legacyMode}), 
             ItemList({
             itemsSlots: this.state.itemsSlots})
           ), 
@@ -975,3 +1239,5 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
     );
   }
 });
+//show msg item conflict on legacy mode
+//ui settings

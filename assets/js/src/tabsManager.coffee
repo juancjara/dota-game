@@ -6,6 +6,9 @@ Tab = (data) ->
   this.active = false
   this.queueFun = {}
   this.acceptKey = false
+  funAux = () ->
+    return
+  this.noFocus = data.noFocus || funAux
   return
 
 Tab::switchStatus = (status) ->
@@ -22,16 +25,18 @@ Tab::unregister = (key) ->
   return this
 
 Tab::emit = (key) ->
+  
   if not this.acceptKey 
     return
 
-  if this.queueFun.length == 1
+  if Object.keys(this.queueFun).length == 1
     fun = {};
     for k of this.queueFun
       fun = this.queueFun[k]
     fun(key)
   else
-    this.queueFun[key]()
+    if key of this.queueFun
+      this.queueFun[key]()
   return this
 
 TabsManager = (tabs) ->
@@ -48,10 +53,16 @@ TabsManager::findByName = (name) ->
   return i
 
 TabsManager::changeTab = (index) ->
-  #noFocus = this.views[index].noFocus;
-  #if noFocus
-  #  noFocus()
+  if this.activeTab >= 0
+    this.tabs[this.activeTab].noFocus()
   this.activeTab = index
+  return this
+
+TabsManager::unregisterEvent = (name, key) ->
+  idx = this.findByName(name)
+  if idx < 0
+    return this
+  this.tabs[idx].unregister(key)
   return this
 
 TabsManager::registerEvent = (name, key, action) ->

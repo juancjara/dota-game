@@ -1,6 +1,7 @@
 var Tab, TabsManager;
 
 Tab = function(data) {
+  var funAux;
   data = data || {};
   this.name = data.name || '';
   this.text = data.text || '';
@@ -8,6 +9,8 @@ Tab = function(data) {
   this.active = false;
   this.queueFun = {};
   this.acceptKey = false;
+  funAux = function() {};
+  this.noFocus = data.noFocus || funAux;
 };
 
 Tab.prototype.switchStatus = function(status) {
@@ -32,14 +35,16 @@ Tab.prototype.emit = function(key) {
   if (!this.acceptKey) {
     return;
   }
-  if (this.queueFun.length === 1) {
+  if (Object.keys(this.queueFun).length === 1) {
     fun = {};
     for (k in this.queueFun) {
       fun = this.queueFun[k];
     }
     fun(key);
   } else {
-    this.queueFun[key]();
+    if (key in this.queueFun) {
+      this.queueFun[key]();
+    }
   }
   return this;
 };
@@ -62,7 +67,20 @@ TabsManager.prototype.findByName = function(name) {
 };
 
 TabsManager.prototype.changeTab = function(index) {
+  if (this.activeTab >= 0) {
+    this.tabs[this.activeTab].noFocus();
+  }
   this.activeTab = index;
+  return this;
+};
+
+TabsManager.prototype.unregisterEvent = function(name, key) {
+  var idx;
+  idx = this.findByName(name);
+  if (idx < 0) {
+    return this;
+  }
+  this.tabs[idx].unregister(key);
   return this;
 };
 
