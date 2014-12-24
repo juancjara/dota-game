@@ -17,7 +17,8 @@ var API = (function() {
 
   var urls = {
     'createChallenge': '/challenge/create',
-    'getChallenge': '/challenge/search'
+    'getChallenge': '/challenge/search',
+    'sendMessage': '/sendMessage'
   }
 
   return {

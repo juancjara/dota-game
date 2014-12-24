@@ -1,34 +1,28 @@
 var dispatcher = (function() {
-  var active = false;
+  
   var queueKey = {};
   var queueFun = {};
+  var self = this;
   window.onkeydown = function(e) {
-    
-    /*if (!active) {
-      return
-    }*/
+
     var code = e.keyCode ? e.keyCode: e.which;
     var key = KeyCode[code];
+    
+    var dialogOpen = $('dialog').css('display');
 
-    if (code == 32) {
+    if (code == 32 && dialogOpen == 'none') {
       e.preventDefault();
     }
     /*
     if (key in queueKey) {
+      console.log('aca');
       queueKey[key]();
     }*/
-    console.log(key, 'key');
     dispatcher.execute('emit', key);
 
   }
-
+  
   return {
-    onEvents: function() {
-      active = true;     
-    },
-    offEvents: function() {
-      active = false;
-    },
     subscribeKey: function(key, fun) {
       queueKey[key] = fun;
     },

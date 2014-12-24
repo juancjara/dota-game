@@ -52,6 +52,7 @@ Tab.prototype.emit = function(key) {
 TabsManager = function(tabs) {
   this.tabs = tabs;
   this.activeTab = -1;
+  this.active = true;
 };
 
 TabsManager.prototype.findByName = function(name) {
@@ -95,6 +96,9 @@ TabsManager.prototype.registerEvent = function(name, key, action) {
 };
 
 TabsManager.prototype.emit = function(key) {
+  if (!this.active) {
+    return this;
+  }
   if (!key) {
     return this;
   }
@@ -110,6 +114,10 @@ TabsManager.prototype.switchStatus = function(name, status) {
   }
   this.tabs[idx].switchStatus(status);
   return this;
+};
+
+TabsManager.prototype.getActive = function() {
+  return this.activeTab;
 };
 
 if (typeof exports !== 'undefined') {

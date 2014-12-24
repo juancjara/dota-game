@@ -23,6 +23,7 @@ app.listen(port);
 
 app.get('/', rMain.index);
 app.get('/:id', rMain.getChallenge);
+app.post('/sendMessage', rMain.sendMessage);
 
 app.post('/challenge/create', rChallenge.create);
 app.post('/challenge/search', rChallenge.search);

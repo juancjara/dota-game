@@ -27,7 +27,6 @@ listChallenge = [
 $(function() {
   heroMng.create();
   itemMng.create();
-
   var data = {
     "name": "none",
     skills: [
