@@ -116,6 +116,10 @@ TabsManager.prototype.switchStatus = function(name, status) {
   return this;
 };
 
+TabsManager.prototype.getActive = function() {
+  return this.activeTab;
+};
+
 if (typeof exports !== 'undefined') {
   exports.TabsManager = TabsManager;
   exports.Tab = Tab;

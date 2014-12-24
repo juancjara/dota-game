@@ -88,6 +88,9 @@ TabsManager::switchStatus = (name, status) ->
   this.tabs[idx].switchStatus(status)
   return this
 
+TabsManager::getActive = () ->
+  return this.activeTab;
+
 if typeof exports isnt 'undefined'
   exports.TabsManager = TabsManager
   exports.Tab = Tab

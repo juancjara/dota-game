@@ -957,8 +957,7 @@ var DialogView = React.createClass({
     return {
       dialog: null,
       content: '',
-      chooseFeel: 'Pick One',
-      supSelected:  'Pick One'
+      error: [false, false, false]
     }
   },
   mixins: [React.addons.LinkedStateMixin],
@@ -970,56 +969,136 @@ var DialogView = React.createClass({
     });
   },
   closeDialog: function() {
-    console.log('asdfasdf');
     this.state.dialog.close();
   },
   send: function() {
-    console.log(this.state.content)
+    var error = this.state.error;
+    var errorInForm = false;
+    
+    var supSelected = this.refs.selectSup.getDOMNode().value;
+    var feelSelected = this.refs.selectFeel.getDOMNode().value;
+
+    var data = {
+      sup: supSelected,
+      feel: feelSelected,
+      content: this.state.content      
+    }
+
+    if (data.sup == 'Pick one') {
+      error[0] = true;
+      errorInForm = true;
+    }
+    
+    if (data.feel == 'Pick one') {
+      error[1] = true;
+      errorInForm = true;
+    }
+
+    if (!data.content.length) {
+      error[2] = true;
+      errorInForm = true;
+    }
+
+    if (!errorInForm) {
+      API.consume('sendMessage', data, 
+        function(err, val){
+          console.log('form', err, val);
+        }
+      );
+      var self = this;
+      setTimeout(function(){
+        self.state.dialog.close();
+      },500); 
+    }
+    this.setState({
+      error: error
+    });
   },
   openDialog: function() {
     dispatcher.execute('stopChallenge');
+    this.setState({
+      content: '',
+      chooseFeel: 'Pick one',
+      supSelected:  'Pick one',
+      error: [false, false, false]
+    });
     this.state.dialog.showModal();
   },
-  chooseFeel: function(value) {
+  updateField: function(idx) {
+    var error = this.state.error;
+    error[idx] = false;
     this.setState({
-      feelSelected: value
+      error: error
     });
   },
-  chooseSup: function(value) {
-    this.setState({
-      supSelected: value
-    });
+  updateContent: function(e) {
+    this.setState({content: e.target.value});
+    this.updateField(2);
   },
   render: function() {
-    var select = ['Pick One', 'HAPPY', 'LOL', 'OMG', 'WTF', 'MEH', 'F*CK', 'STFU'];
+    var select = ['Pick one', 'HAPPY', 'LOL', 'OMG', 'WTF', 'MEH', 'F*CK', 'STFU'];
     var optionsFeel = select.map(function(item) {
       return (
-        <option value={item} onClick={this.chooseFeel.bind(null, item)}>{item}</option>
+        <option 
+          value={item}>
+          {item}
+        </option>
       )
-    }.bind(this));
+    });
+
     var selectSup = ['Pick one', 'Bug', 'New feature', 'Commend', 'Something else'];
     var optionsSup = selectSup.map(function(item) {
       return (
-        <option value={item} onClick={this.chooseSup.bind(null, item)}>{item}</option>
+        <option 
+          value={item}>
+          {item}
+        </option>
       )
-    }.bind(this));
+    });
+
+    var selectSupClass = 'error '+ (this.state.error[0]? 'show': 'hide');
+    var selectFeelClass = 'error '+ (this.state.error[1]? 'show': 'hide');
+    var contentClass = 'error '+ (this.state.error[2]? 'show': 'hide');
     return (   
       <div className='dialog-report'>
         <button className='open-dialog' onClick={this.openDialog}>Report or commend</button>
         <dialog>
           <h2>Report or Commend</h2>
+
           <div className='row'>
-            <label for=''>Sup?</label>
-            <select value={this.state.supSelected}>{optionsSup}</select>
+            <div className={selectSupClass}>Yo, pick an option</div>
+            <label>Sup?</label>
+            <select 
+              ref='selectSup'
+              defaultValue='Pick one' 
+              onChange={this.updateField.bind(null, 0)}>
+              {optionsSup}
+            </select>
+            
           </div>
           <div className='row'>
-            <label for=''>How does it make you feel?</label>
-            <select value={this.state.feelSelected}>{optionsFeel}</select>
+            <div className={selectFeelClass}>Choose wisely, take your time</div>
+            <label>How does it make you feel?</label>
+            <select 
+              ref='selectFeel'
+              defaultValue='Pick one' 
+              onChange={this.updateField.bind(null, 1)}>
+              {optionsFeel}
+            </select>
+            
+          </div>
+
+          <div 
+            className={contentClass}>
+            Game is hard. I know you can fill it. I&#8217     ll wait.
           </div>
           <label for=''>What&#8217     s going on?</label>
           <div className='row'>
-            <textarea valueLink={this.linkState('content')}/>
+            <textarea 
+              value={this.state.content}
+              onChange={this.updateContent}/>
           </div>
+
           <div className='row'>
             <button className='button btn-normal' onClick={this.closeDialog}>Close</button>
             <button className='button btn-default' onClick={this.send}>Send</button>
@@ -1073,6 +1152,7 @@ var BaseTemplate = React.createClass({
     dispatcher.subscribe('switchStatus', function(param){
       tm.switchStatus(param.name, param.status)
     });
+    dispatcher.subscribe('getActiveTab', tm.getActive);
     return {
       tabsMng: tm,
       data: this.props.data,

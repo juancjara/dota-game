@@ -134,6 +134,10 @@ input.cmn-toggle-round-flat:checked + label:after {
 .alert {
   color: #ff4486;
 }
+.dialog-report .error {
+  margin-top: 5px;
+  color: #f00;
+}
 .dialog-report .row {
   margin: 1em 0;
 }
