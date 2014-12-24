@@ -42,6 +42,7 @@ Tab::emit = (key) ->
 TabsManager = (tabs) ->
   this.tabs = tabs
   this.activeTab = -1;
+  this.active = true;
   return
 
 TabsManager::findByName = (name) ->
@@ -73,6 +74,8 @@ TabsManager::registerEvent = (name, key, action) ->
   return this
 
 TabsManager::emit = (key) ->
+  if not this.active
+    return this
   if not key
     return this
   this.tabs[this.activeTab].emit(key);
@@ -88,3 +91,11 @@ TabsManager::switchStatus = (name, status) ->
 if typeof exports isnt 'undefined'
   exports.TabsManager = TabsManager
   exports.Tab = Tab
+
+TabsManager::inactive = () ->
+  this.active = false;
+  return this
+
+TabsManager:: active = () ->
+  this.active = true;
+  return this;

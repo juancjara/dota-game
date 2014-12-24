@@ -952,6 +952,83 @@ var SettingsView = React.createClass({displayName: 'SettingsView',
   }
 });
 
+var DialogView = React.createClass({displayName: 'DialogView',
+  getInitialState: function() {
+    return {
+      dialog: null,
+      content: '',
+      chooseFeel: 'Pick One',
+      supSelected:  'Pick One'
+    }
+  },
+  mixins: [React.addons.LinkedStateMixin],
+  componentDidMount: function() {
+    var dialog = document.querySelector('dialog');
+    dialogPolyfill.registerDialog(dialog);
+    this.setState({
+      dialog: dialog
+    });
+  },
+  closeDialog: function() {
+    this.state.dialog.close();
+  },
+  send: function() {
+    console.log(this.state.content)
+  },
+  openDialog: function() {
+    this.state.dialog.showModal();
+  },
+  chooseFeel: function(value) {
+    this.setState({
+      feelSelected: value
+    });
+  },
+  chooseSup: function(value) {
+    this.setState({
+      supSelected: value
+    });
+  },
+  render: function() {
+    var select = ['Pick One', 'HAPPY', 'LOL', 'OMG', 'WTF', 'MEH', 'F*CK', 'STFU'];
+    var optionsFeel = select.map(function(item) {
+      return (
+        React.DOM.option({value: item, onClick: this.chooseFeel.bind(null, item)}, item)
+      )
+    }.bind(this));
+    var selectSup = ['Pick one', 'Bug', 'New feature', 'Commend', 'Something else'];
+    var optionsSup = selectSup.map(function(item) {
+      return (
+        React.DOM.option({value: item, onClick: this.chooseSup.bind(null, item)}, item)
+      )
+    }.bind(this));
+    return (   
+      React.DOM.div({className: "dialog-report"}, 
+        React.DOM.button({className: "open-dialog", onClick: this.openDialog}, "Report or commend"), 
+        React.DOM.dialog(null, 
+          React.DOM.h2(null, "Report or Commend"), 
+          React.DOM.div({className: "row"}, 
+            React.DOM.label({for: ""}, "Sup?"), 
+            React.DOM.select({value: this.state.supSelected}, optionsSup)
+          ), 
+          React.DOM.div({className: "row"}, 
+            React.DOM.label({for: ""}, "How does it make you feel?"), 
+            React.DOM.select({value: this.state.feelSelected}, optionsFeel)
+          ), 
+          React.DOM.label({for: ""}, "What’s going on?"), 
+          React.DOM.div({className: "row"}, 
+            React.DOM.textarea({valueLink: this.linkState('content')})
+          ), 
+          React.DOM.div({className: "row"}, 
+            React.DOM.button({className: "button btn-normal", onClick: this.closeDialog}, "Close"), 
+            React.DOM.button({className: "button btn-default", onClick: this.send}, "Send")
+          )
+        )
+      )
+      
+    )
+  }
+});
+
 var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
   getInitialState: function() {
     dispatcher.subscribe('clearHero', this.clearHero);
@@ -979,6 +1056,10 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
         noFocus: function() {
           dispatcher.execute('stopChallenge');
         }
+      }), new Tab({
+        name: 'nextFeature',
+        text: 'Choose next features',
+        target: '#next-feature'
       })
     ]);
     dispatcher.subscribe('emit', function(param){
@@ -1220,6 +1301,15 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
         SelectChallenge({
           heroSelected: this.state.data, 
           itemsSelected: this.state.itemsSlots}), 
+        React.DOM.section({
+          id: "next-feature", 
+          className: "tab-content"}, 
+          React.DOM.iframe({
+            src: "http://strawpoll.me/embed_1/3192297", 
+            className: "poll"}, 
+            "Loading poll..."
+          )
+        ), 
 
         React.DOM.div({
           id: "tab-game", 
@@ -1239,11 +1329,12 @@ var BaseTemplate = React.createClass({displayName: 'BaseTemplate',
           React.DOM.div({className: "topics"}, 
             "Some skills require a click on an enemy(red circle) to be use."
           )
-        )
-
+        ), 
+        DialogView(null)
       )
     );
   }
 });
 //show msg item conflict on legacy mode
-//ui settings
+//dialog close ESC
+//send msg

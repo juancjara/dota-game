@@ -9,15 +9,14 @@ var dispatcher = (function() {
     }*/
     var code = e.keyCode ? e.keyCode: e.which;
     var key = KeyCode[code];
-
     if (code == 32) {
       e.preventDefault();
     }
-    /*
+    /*console.log(queueKey, 'queueKey', code, key)
     if (key in queueKey) {
+      console.log('aca');
       queueKey[key]();
     }*/
-    console.log(key, 'key');
     dispatcher.execute('emit', key);
 
   }

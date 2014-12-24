@@ -16,14 +16,12 @@ html(lang='eng')
       link(rel='stylesheet', href='assets/styles/sprite.css')
       link(rel='stylesheet', href='assets/styles/hero.css')
       link(rel='stylesheet', href='assets/styles/items.css')
+      link(rel='stylesheet', href='assets/styles/vendor/dialog-polyfill.css')
   body
     h1(class='text-center') Support us in 
       a(href='https://www.indiegogo.com/projects/dota-practice') indiegogo    
     div(class='hide', id='challenge') #{id}
     #main
-
-    iframe(src="http://strawpoll.me/embed_1/3192297",
-      style="width: 600px; height: 390px; border: 0;", class='poll') Loading poll...
 
     footer(class='text-center') Inspired by 
       a(href="http://html5up.net") HTML5 UP
@@ -33,8 +31,9 @@ html(lang='eng')
     else
       script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
       //script(type='text/javascript', src='/assets/js/vendor/jquery-2.0.0.min.js')
+      script(type='text/javascript', src='/assets/js/vendor/dialog-polyfill.js')
       script(type='text/javascript', src='/assets/js/api.js')
-      script(type='text/javascript', src='/assets/js/vendor/react.min.js')
+      script(type='text/javascript', src='/assets/js/vendor/react-with-addons.min.js')
       script(type='text/javascript', src='/assets/js/key.js')
       script(type='text/javascript', src='assets/js/dispatcher.js')
       script(type='text/javascript', src='assets/js/build/tabsManager.js')

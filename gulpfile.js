@@ -39,7 +39,8 @@ gulp.task('compressJS', function() {
   gulp.src(
       [
         './assets/js/api.js',
-        './assets/js/vendor/react.min.js',
+        './assets/js/vendor/dialog-polyfill.js',
+        './assets/js/vendor/react-with-addons.min.js',
         './assets/js/key.js',
         './assets/js/dispatcher.js',
         './assets/js/build/*.js',
@@ -53,6 +54,7 @@ gulp.task('compressJS', function() {
 
 gulp.task('minify-css', function() {
   gulp.src([
+      './assets/styles/vendor/dialog-polyfill.css',
       './assets/styles/hero.css',
       './assets/styles/items.css',
       './assets/styles/sprite.css',

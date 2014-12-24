@@ -952,6 +952,83 @@ var SettingsView = React.createClass({
   }
 });
 
+var DialogView = React.createClass({
+  getInitialState: function() {
+    return {
+      dialog: null,
+      content: '',
+      chooseFeel: 'Pick One',
+      supSelected:  'Pick One'
+    }
+  },
+  mixins: [React.addons.LinkedStateMixin],
+  componentDidMount: function() {
+    var dialog = document.querySelector('dialog');
+    dialogPolyfill.registerDialog(dialog);
+    this.setState({
+      dialog: dialog
+    });
+  },
+  closeDialog: function() {
+    this.state.dialog.close();
+  },
+  send: function() {
+    console.log(this.state.content)
+  },
+  openDialog: function() {
+    this.state.dialog.showModal();
+  },
+  chooseFeel: function(value) {
+    this.setState({
+      feelSelected: value
+    });
+  },
+  chooseSup: function(value) {
+    this.setState({
+      supSelected: value
+    });
+  },
+  render: function() {
+    var select = ['Pick One', 'HAPPY', 'LOL', 'OMG', 'WTF', 'MEH', 'F*CK', 'STFU'];
+    var optionsFeel = select.map(function(item) {
+      return (
+        <option value={item} onClick={this.chooseFeel.bind(null, item)}>{item}</option>
+      )
+    }.bind(this));
+    var selectSup = ['Pick one', 'Bug', 'New feature', 'Commend', 'Something else'];
+    var optionsSup = selectSup.map(function(item) {
+      return (
+        <option value={item} onClick={this.chooseSup.bind(null, item)}>{item}</option>
+      )
+    }.bind(this));
+    return (   
+      <div className='dialog-report'>
+        <button className='open-dialog' onClick={this.openDialog}>Report or commend</button>
+        <dialog>
+          <h2>Report or Commend</h2>
+          <div className='row'>
+            <label for=''>Sup?</label>
+            <select value={this.state.supSelected}>{optionsSup}</select>
+          </div>
+          <div className='row'>
+            <label for=''>How does it make you feel?</label>
+            <select value={this.state.feelSelected}>{optionsFeel}</select>
+          </div>
+          <label for=''>What&#8217     s going on?</label>
+          <div className='row'>
+            <textarea valueLink={this.linkState('content')}/>
+          </div>
+          <div className='row'>
+            <button className='button btn-normal' onClick={this.closeDialog}>Close</button>
+            <button className='button btn-default' onClick={this.send}>Send</button>
+          </div>
+        </dialog>
+      </div>
+      
+    )
+  }
+});
+
 var BaseTemplate = React.createClass({
   getInitialState: function() {
     dispatcher.subscribe('clearHero', this.clearHero);
@@ -979,6 +1056,10 @@ var BaseTemplate = React.createClass({
         noFocus: function() {
           dispatcher.execute('stopChallenge');
         }
+      }), new Tab({
+        name: 'nextFeature',
+        text: 'Choose next features',
+        target: '#next-feature'
       })
     ]);
     dispatcher.subscribe('emit', function(param){
@@ -1220,6 +1301,15 @@ var BaseTemplate = React.createClass({
         <SelectChallenge
           heroSelected = {this.state.data}
           itemsSelected = {this.state.itemsSlots} />
+        <section 
+          id='next-feature'
+          className='tab-content'>
+          <iframe 
+            src="http://strawpoll.me/embed_1/3192297"
+            className='poll'> 
+            Loading poll...
+          </iframe>
+        </section>
 
         <div 
           id='tab-game'
@@ -1240,10 +1330,11 @@ var BaseTemplate = React.createClass({
             Some skills require a click on an enemy(red circle) to be use.
           </div>
         </div>
-
+        <DialogView />
       </div>
     );
   }
 });
 //show msg item conflict on legacy mode
-//ui settings
+//dialog close ESC
+//send msg
