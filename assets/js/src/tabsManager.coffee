@@ -91,11 +91,3 @@ TabsManager::switchStatus = (name, status) ->
 if typeof exports isnt 'undefined'
   exports.TabsManager = TabsManager
   exports.Tab = Tab
-
-TabsManager::inactive = () ->
-  this.active = false;
-  return this
-
-TabsManager:: active = () ->
-  this.active = true;
-  return this;

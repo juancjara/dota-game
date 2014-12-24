@@ -120,13 +120,3 @@ if (typeof exports !== 'undefined') {
   exports.TabsManager = TabsManager;
   exports.Tab = Tab;
 }
-
-TabsManager.prototype.inactive = function() {
-  this.active = false;
-  return this;
-};
-
-TabsManager.prototype.active = function() {
-  this.active = true;
-  return this;
-};

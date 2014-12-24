@@ -970,12 +970,14 @@ var DialogView = React.createClass({displayName: 'DialogView',
     });
   },
   closeDialog: function() {
+    console.log('asdfasdf');
     this.state.dialog.close();
   },
   send: function() {
     console.log(this.state.content)
   },
   openDialog: function() {
+    dispatcher.execute('stopChallenge');
     this.state.dialog.showModal();
   },
   chooseFeel: function(value) {

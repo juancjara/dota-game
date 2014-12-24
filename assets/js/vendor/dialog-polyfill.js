@@ -142,9 +142,9 @@ var dialogPolyfill = (function() {
   };
 
   dialogPolyfill.close = function(retval) {
-    if (this.open)
+    /*if (!this.open)
       throw 'InvalidStateError: close called on closed dialog';
-    this.open = false;
+    this.open = false;*/
     this.removeAttribute('open');
 
     // Leave returnValue untouched in case it was set directly on the element
@@ -174,7 +174,6 @@ var dialogPolyfill = (function() {
       }
       this.dispatchEvent(event);
     }
-
     return this.returnValue;
   };
 
